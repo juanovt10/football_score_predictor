@@ -12,7 +12,7 @@ SCROPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCROPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('europe_football_leagues')
 
-def get_teamA_data():
+def get_home_team_data():
     """
     Requests the home team to retrive the previous season statistics
     """
@@ -21,13 +21,13 @@ def get_teamA_data():
         print("Note that this program only assesses the Premier League 2023/24 teams")
         print("Example: Manchester United")
 
-        team_a = input("Enter team A here:\n")
+        home_team = input("Enter team A here:\n")
 
-        if validate_team_entry(team_a):
-            print(f'{team_a} is in the Premier League\n')
+        if validate_team_entry(home_team):
+            print(f'{home_team} is in the Premier League\n')
             break
 
-    return team_a
+    return home_team
 
 def validate_team_entry(team_entry):
     """
@@ -50,7 +50,7 @@ def validate_team_entry(team_entry):
     return False
 
 
-def get_teamB_data():
+def get_away_team_data():
     """
     Requests the away team to retrive the previous season statistics
     """
@@ -59,16 +59,17 @@ def get_teamB_data():
         print("Note that this program only assesses the Premier League 2023/24 teams")
         print("Example: Manchester City")
 
-        team_b = input("Enter team B here:\n")
+        away_team = input("Enter team B here:\n")
 
-        if validate_team_entry(team_b):
-            print(f'{team_b} is in the Premier League\n')
+        if validate_team_entry(away_team):
+            print(f'{away_team} is in the Premier League\n')
             break
 
-    return team_b
+    return away_team
 
 def main():
-    get_teamA_data()
-    get_teamB_data()
-    
+    home_team = get_home_team_data()
+    away_team = get_away_team_data()
+
+
 main()
