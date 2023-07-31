@@ -79,24 +79,21 @@ def get_team_data(team):
 
     data = [float(i) for i in str_data]
 
-    stat_categories = {
-        "xg": 0,
-        "possession": 1,
-        "shots": 2,
-        "goal_difference": 3,
-        "xg_against": 4
-    }
+    stat_indexes = [0,1,2,3,4]
 
     stats_weighted_averages = []
 
-    for category, index in stat_categories.items():
+    for index in stat_indexes:
         stat_weighted_average = 0
         for i in range(index, len(data), 5):
             stat_weighted_average += ((data[i]) * (5-(i/5)))
-        
+
         stats_weighted_averages.append(stat_weighted_average / 15)
-        
+
+    return stats_weighted_averages
     print(stats_weighted_averages)
+
+
 
 
 def main():
