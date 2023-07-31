@@ -99,7 +99,15 @@ def get_team_data(team):
     return stats_weighted_averages
     
 
-# def result_calculator(stats):
+def result_calculator(stats):
+    score = 0 
+    score += int(stats[0] * 1)
+    score += int(stats[1] * 0.5)
+    score += int(stats[2] * 1)
+    score += int(stats[3] * 0.2)
+    score += int(stats[4] * (-1))
+
+    print(score)
 
 
 def main():
@@ -107,5 +115,7 @@ def main():
     away_team = input_away_team(home_team)
     home_team_data = get_team_data(home_team)
     away_team_data = get_team_data(away_team)
+    result_calculator(home_team_data)
+    result_calculator(away_team_data)
 
 main()
