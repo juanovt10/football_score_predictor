@@ -79,46 +79,24 @@ def get_team_data(team):
 
     data = [float(i) for i in str_data]
 
-    xg_weighted_average = 0
+    stat_categories = {
+        "xg": 0,
+        "possession": 1,
+        "shots": 2,
+        "goal_difference": 3,
+        "xg_against": 4
+    }
 
-    for i in range(0, len(data), 5):
-        xg_weighted_average += ((data[i]) * (5-(i/5)))
-    
-    xg_weighted_average /= 15
+    stats_weighted_averages = []
 
-    possession_weighted_average = 0
-
-    for i in range(1, len(data), 5):
-        possession_weighted_average += ((data[i]) * (5-(i/5)))
-    
-    possession_weighted_average /= 15
-
-    shots_weighted_average = 0
-
-    for i in range(2, len(data), 5):
-        shots_weighted_average += ((data[i]) * (5-(i/5)))
-    
-    shots_weighted_average /= 15
-
-    goal_difference_weighted_average = 0
-
-    for i in range(3, len(data), 5):
-        goal_difference_weighted_average += ((data[i]) * (5-(i/5)))
-    
-    goal_difference_weighted_average /= 15
-
-    xg_against_weighted_average = 0
-
-    for i in range(4, len(data), 5):
-        xg_against_weighted_average += ((data[i]) * (5-(i/5)))
-    
-    xg_against_weighted_average /= 15
-
-    print(xg_weighted_average)
-    print(possession_weighted_average)
-    print(shots_weighted_average)
-    print(goal_difference_weighted_average)
-    print(xg_against_weighted_average)
+    for category, index in stat_categories.items():
+        stat_weighted_average = 0
+        for i in range(index, len(data), 5):
+            stat_weighted_average += ((data[i]) * (5-(i/5)))
+        
+        stats_weighted_averages.append(stat_weighted_average / 15)
+        
+    print(stats_weighted_averages)
 
 
 def main():
