@@ -79,8 +79,6 @@ def get_team_data(team):
 
     data = [float(i) for i in str_data]
 
-    print(data)
-
     xg_weighted_average = 0
 
     for i in range(0, len(data), 5):
@@ -88,8 +86,39 @@ def get_team_data(team):
     
     xg_weighted_average /= 15
 
-    print(xg_weighted_average)
+    possession_weighted_average = 0
 
+    for i in range(1, len(data), 5):
+        possession_weighted_average += ((data[i]) * (5-(i/5)))
+    
+    possession_weighted_average /= 15
+
+    shots_weighted_average = 0
+
+    for i in range(2, len(data), 5):
+        shots_weighted_average += ((data[i]) * (5-(i/5)))
+    
+    shots_weighted_average /= 15
+
+    goal_difference_weighted_average = 0
+
+    for i in range(3, len(data), 5):
+        goal_difference_weighted_average += ((data[i]) * (5-(i/5)))
+    
+    goal_difference_weighted_average /= 15
+
+    xg_against_weighted_average = 0
+
+    for i in range(4, len(data), 5):
+        xg_against_weighted_average += ((data[i]) * (5-(i/5)))
+    
+    xg_against_weighted_average /= 15
+
+    print(xg_weighted_average)
+    print(possession_weighted_average)
+    print(shots_weighted_average)
+    print(goal_difference_weighted_average)
+    print(xg_against_weighted_average)
 
 
 def main():
