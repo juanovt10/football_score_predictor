@@ -21,7 +21,7 @@ def input_home_team():
         print("Note that this program only assesses the Premier League 2023/24 teams")
         print("Example: Manchester United")
 
-        home_team = input("Enter team A here:\n")
+        home_team = input("Enter team A here:\n").title()
 
         if validate_team_entry(home_team, ""):
             print(f'{home_team} is in the Premier League\n')
@@ -59,7 +59,7 @@ def input_away_team(home_team):
         print("Note that this program only assesses the Premier League 2023/24 teams")
         print("Example: Manchester City")
 
-        away_team = input("Enter team B here:\n")
+        away_team = input("Enter team B here:\n").title()
 
         if validate_team_entry(away_team, home_team):
             print(f'{away_team} is in the Premier League\n')
@@ -68,6 +68,11 @@ def input_away_team(home_team):
     return away_team
 
 def get_team_data(team):
+    """
+    This function scans the spreadsheet and collects the row (list) of the stats of
+    the inputted teams. It then, calculate a weighted average of each stat by giving
+    more weight to latest season stats.
+    """
     premier_league_worksheet = SHEET.worksheet("PremierLeague")
     original_data = premier_league_worksheet.get_all_values()
     
@@ -90,16 +95,17 @@ def get_team_data(team):
 
         stats_weighted_averages.append(stat_weighted_average / 15)
 
-    return stats_weighted_averages
     print(stats_weighted_averages)
+    return stats_weighted_averages
+    
 
-
+# def result_calculator(stats):
 
 
 def main():
     home_team = input_home_team()
     away_team = input_away_team(home_team)
-    get_team_data(home_team)
-    get_team_data(away_team)
+    home_team_data = get_team_data(home_team)
+    away_team_data = get_team_data(away_team)
 
 main()
