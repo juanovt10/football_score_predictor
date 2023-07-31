@@ -33,12 +33,27 @@ def validate_team_entry(team_entry, home_team):
     """
 
     premier_league_worksheet = SHEET.worksheet("PremierLeague")
-    original_data = premier_league_worksheet.get_all_values()
-    transpose_data = [list(row) for row in zip(*original_data)]
+    la_liga_worksheet = SHEET.worksheet("LaLiga")
+    serie_a_worksheet = SHEET.worksheet("SerieA")
+    bundesliga_worksheet = SHEET.worksheet("Bundesliga")
+    ligue_1_worksheet = SHEET.worksheet("Ligue1")
 
-    teams = (transpose_data[0])[1:]
+    premier_league_original_data = premier_league_worksheet.get_all_values()
+    la_liga_original_data = la_liga_worksheet.get_all_values()
+    serie_a_original_data = serie_a_worksheet.get_all_values()
+    bundesliga_original_data = bundesliga_worksheet.get_all_values()
+    ligue_1_original_data = ligue_1_worksheet.get_all_values()
 
-    for team in teams:
+    europe_leagues_original_data = [premier_league_original_data, la_liga_original_data, serie_a_original_data, bundesliga_original_data, ligue_1_original_data]
+
+    europe_top_league_teams = []
+
+    for league_teams in europe_leagues_original_data:
+        transpose_data = [list(row) for row in zip(*league_teams)]
+        teams = (transpose_data[0])[1:]
+        europe_top_league_teams.append(teams)
+
+    for team in europe_top_league_teams:
         if team_entry == team and team_entry != home_team:
             return True
 
@@ -132,4 +147,4 @@ def main():
 
     print(f"The result is: {home_team} {home_result} - {away_result} {away_team}")
 
-main()
+# main()
