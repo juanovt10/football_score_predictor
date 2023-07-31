@@ -75,6 +75,7 @@ def get_team_data(team):
     for team_data in original_data:
         if team_data[0] == team:
             str_data = team_data[1:]
+            break
 
     data = [float(i) for i in str_data]
 
@@ -83,9 +84,9 @@ def get_team_data(team):
     xg_weighted_average = 0
 
     for i in range(0, len(data), 5):
-        xg_weighted_average += data[i]
+        xg_weighted_average += ((data[i]) * (5-(i/5)))
     
-    xg_weighted_average /= 5
+    xg_weighted_average /= 15
 
     print(xg_weighted_average)
 
