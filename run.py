@@ -71,10 +71,23 @@ def get_team_data(team):
     premier_league_worksheet = SHEET.worksheet("PremierLeague")
     original_data = premier_league_worksheet.get_all_values()
     
-    data = []
+    str_data = []
     for team_data in original_data:
         if team_data[0] == team:
-            data = team_data[1:]
+            str_data = team_data[1:]
+
+    data = [float(i) for i in str_data]
+
+    print(data)
+
+    xg_weighted_average = 0
+
+    for i in range(0, len(data), 5):
+        xg_weighted_average += data[i]
+    
+    xg_weighted_average /= 5
+
+    print(xg_weighted_average)
 
 
 
