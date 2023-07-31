@@ -17,10 +17,6 @@ def input_home_team():
     Requests the home team to retrive the previous season statistics
     """
     while True:
-        print("Welcome to the 2023/24 Premier League season predictor. Enter the teams and based in the last 5 seasons performance, find out the score!\n")
-        print("Note that this program only assesses the Premier League 2023/24 teams")
-        print("Example: Manchester United or Arsenal\n")
-
         home_team = input("Enter home team:\n").title()
 
         if validate_team_entry(home_team, ""):
@@ -124,6 +120,9 @@ def result_calculator(stats, location):
     return score
 
 def main():
+    print("Welcome to the 2023/24 Premier League season predictor. Enter the teams and based in the last 5 seasons performance, find out the score!\n")
+    print("Note that this program only assesses the Premier League 2023/24 teams")
+    print("Example: Manchester United or Arsenal\n")
     home_team = input_home_team()
     away_team = input_away_team(home_team)
     home_team_data = get_team_data(home_team)
