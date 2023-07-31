@@ -99,27 +99,34 @@ def get_team_data(team):
     return stats_weighted_averages
     
 
-def result_calculator(stats):
+def result_calculator(stats, location):
+    """
+    This function multyply each stat for a factor and then adds them all up to 
+    provide a match
+    """
     score = 0 
-    score += int(stats[0] * 1)
-    score += int(stats[1] * 0.5)
-    score += int(stats[2] * 1)
-    score += int(stats[3] * 0.5)
+    score += int(stats[0] * 0.5)
+    score += int(stats[1] * 0.25)
+    score += int(stats[2] * 0.75)
+    score += int(stats[3] * 1)
     score += int(stats[4] * (-0.5))
     score += int(stats[5] * (-1))
 
+    if location == "home":
+        score += 1
+
     if score > 5:
         score = 5
-        
-    print(score)
 
+    print(score)
+    return score
 
 def main():
     home_team = input_home_team()
     away_team = input_away_team(home_team)
     home_team_data = get_team_data(home_team)
     away_team_data = get_team_data(away_team)
-    result_calculator(home_team_data)
-    result_calculator(away_team_data)
+    home_result = result_calculator(home_team_data, "home")
+    away_result = result_calculator(away_team_data, "away")
 
 main()
