@@ -17,14 +17,14 @@ def input_home_team():
     Requests the home team to retrive the previous season statistics
     """
     while True:
-        print("Please enter the home team")
+        print("Welcome to the 2023/24 Premier League season predictor. Enter the teams and based in the last 5 seasons performance, find out the score!\n")
         print("Note that this program only assesses the Premier League 2023/24 teams")
-        print("Example: Manchester United")
+        print("Example: Manchester United or Arsenal\n")
 
-        home_team = input("Enter team A here:\n").title()
+        home_team = input("Enter home team:\n").title()
 
         if validate_team_entry(home_team, ""):
-            print(f'{home_team} is in the Premier League\n')
+            print(f'\nHome team: {home_team}\n')
             break
 
     return home_team
@@ -46,7 +46,11 @@ def validate_team_entry(team_entry, home_team):
         if team_entry == team and team_entry != home_team:
             return True
 
-    print(f"Sorry but {team_entry} is not in the Premier League\n")
+    if team_entry == home_team:
+        print(f"\nSorry but {team_entry} cannot be both the home and away team\n")        
+    else:
+        print(f"\nSorry but {team_entry} is not in the Premier League\n")
+    
     return False
 
 
@@ -55,14 +59,10 @@ def input_away_team(home_team):
     Requests the away team to retrive the previous season statistics
     """
     while True:
-        print("Please enter the away team")
-        print("Note that this program only assesses the Premier League 2023/24 teams")
-        print("Example: Manchester City")
-
-        away_team = input("Enter team B here:\n").title()
+        away_team = input("Enter away team:\n").title()
 
         if validate_team_entry(away_team, home_team):
-            print(f'{away_team} is in the Premier League\n')
+            print(f'\nAway team: {away_team}\n')
             break
 
     return away_team
@@ -95,7 +95,6 @@ def get_team_data(team):
 
         stats_weighted_averages.append(stat_weighted_average / 15)
 
-    print(stats_weighted_averages)
     return stats_weighted_averages
     
 
@@ -114,11 +113,14 @@ def result_calculator(stats, location):
 
     if location == "home":
         score += 1
+    else: 
+        score -= 1
 
     if score > 5:
         score = 5
+    elif score < 0:
+        score = 0
 
-    print(score)
     return score
 
 def main():
@@ -128,5 +130,7 @@ def main():
     away_team_data = get_team_data(away_team)
     home_result = result_calculator(home_team_data, "home")
     away_result = result_calculator(away_team_data, "away")
+
+    print(f"The result is: {home_team} {home_result} - {away_result} {away_team}")
 
 main()
