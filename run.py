@@ -12,7 +12,7 @@ SCROPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCROPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('europe_football_leagues')
 
-def get_home_team_data():
+def input_home_team():
     """
     Requests the home team to retrive the previous season statistics
     """
@@ -36,21 +36,21 @@ def validate_team_entry(team_entry, home_team):
     if the team inputted is part of the premier league. 
     """
 
-    all_data = SHEET.worksheet("PremierLeague")
-    original_data = all_data.get_all_values()
+    premier_league_worksheet = SHEET.worksheet("PremierLeague")
+    original_data = premier_league_worksheet.get_all_values()
     transpose_data = [list(row) for row in zip(*original_data)]
 
     teams = (transpose_data[0])[1:]
 
     for team in teams:
-        if team_entry == team and team_entry != x:
+        if team_entry == team and team_entry != home_team:
             return True
 
     print(f"Sorry but {team_entry} is not in the Premier League\n")
     return False
 
 
-def get_away_team_data(home_team):
+def input_away_team(home_team):
     """
     Requests the away team to retrive the previous season statistics
     """
@@ -67,9 +67,21 @@ def get_away_team_data(home_team):
 
     return away_team
 
-def main():
-    home_team = get_home_team_data()
-    away_team = get_away_team_data(home_team)
+def get_team_data(team):
+    premier_league_worksheet = SHEET.worksheet("PremierLeague")
+    original_data = premier_league_worksheet.get_all_values()
+    
+    data = []
+    for team_data in original_data:
+        if team_data[0] == team:
+            data = team_data[1:]
 
+
+
+def main():
+    home_team = input_home_team()
+    away_team = input_away_team(home_team)
+    get_team_data(home_team)
+    get_team_data(away_team)
 
 main()
