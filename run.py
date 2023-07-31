@@ -23,13 +23,13 @@ def get_home_team_data():
 
         home_team = input("Enter team A here:\n")
 
-        if validate_team_entry(home_team):
+        if validate_team_entry(home_team, ""):
             print(f'{home_team} is in the Premier League\n')
             break
 
     return home_team
 
-def validate_team_entry(team_entry):
+def validate_team_entry(team_entry, home_team):
     """
     Inside here, it will transpose the columns to rows to have a list will all the 
     Premier League teams. Then it will compare the value imputted by the user to see 
@@ -43,14 +43,14 @@ def validate_team_entry(team_entry):
     teams = (transpose_data[0])[1:]
 
     for team in teams:
-        if team_entry == team:
+        if team_entry == team and team_entry != x:
             return True
 
     print(f"Sorry but {team_entry} is not in the Premier League\n")
     return False
 
 
-def get_away_team_data():
+def get_away_team_data(home_team):
     """
     Requests the away team to retrive the previous season statistics
     """
@@ -61,7 +61,7 @@ def get_away_team_data():
 
         away_team = input("Enter team B here:\n")
 
-        if validate_team_entry(away_team):
+        if validate_team_entry(away_team, home_team):
             print(f'{away_team} is in the Premier League\n')
             break
 
@@ -69,7 +69,7 @@ def get_away_team_data():
 
 def main():
     home_team = get_home_team_data()
-    away_team = get_away_team_data()
+    away_team = get_away_team_data(home_team)
 
 
 main()
