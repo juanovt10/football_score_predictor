@@ -84,14 +84,14 @@ def get_team_data(team):
 
     data = [float(i) for i in str_data]
 
-    stat_indexes = [0,1,2,3,4]
+    stat_indexes = [0,1,2,3,4,5]
 
     stats_weighted_averages = []
 
     for index in stat_indexes:
         stat_weighted_average = 0
-        for i in range(index, len(data), 5):
-            stat_weighted_average += ((data[i]) * (5-(i/5)))
+        for i in range(index, len(data), 6):
+            stat_weighted_average += ((data[i]) * (6-(i/6)))
 
         stats_weighted_averages.append(stat_weighted_average / 15)
 
@@ -104,9 +104,13 @@ def result_calculator(stats):
     score += int(stats[0] * 1)
     score += int(stats[1] * 0.5)
     score += int(stats[2] * 1)
-    score += int(stats[3] * 0.2)
-    score += int(stats[4] * (-1))
+    score += int(stats[3] * 0.5)
+    score += int(stats[4] * (-0.5))
+    score += int(stats[5] * (-1))
 
+    if score > 5:
+        score = 5
+        
     print(score)
 
 
