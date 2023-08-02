@@ -53,7 +53,7 @@ def validate_team_entry(team_entry, home_team):
         teams = (transpose_data[0])[1:]
         europe_top_league_teams.extend(teams)
     
-    print(europe_top_league_teams)
+    
 
     for team in europe_top_league_teams:
         if team_entry == team and team_entry != home_team:
@@ -79,6 +79,39 @@ def input_away_team(home_team):
             break
 
     return away_team
+
+def get_team_league(team):
+    premier_league_worksheet = SHEET.worksheet("PremierLeague")
+    la_liga_worksheet = SHEET.worksheet("LaLiga")
+    serie_a_worksheet = SHEET.worksheet("SerieA")
+    bundesliga_worksheet = SHEET.worksheet("Bundesliga")
+    ligue_1_worksheet = SHEET.worksheet("Ligue1")
+
+    premier_league_data = premier_league_worksheet.get_all_values()
+    la_liga_data = la_liga_worksheet.get_all_values()
+    serie_a_data = serie_a_worksheet.get_all_values()
+    bundesliga_data = bundesliga_worksheet.get_all_values()
+    ligue_1_data = ligue_1_worksheet.get_all_values()
+
+    europe_leagues_data = {
+        "Premier League": premier_league_data,
+        "La Liga": la_liga_data,
+        "Serie A": serie_a_data,
+        "Bundesliga": bundesliga_data,
+        "Ligue 1": ligue_1_data
+    }
+
+    league_teams = {}
+
+    for league_name, league_teams_data in europe_leagues_data.items():
+        transpose_data = [list(row) for row in zip(*league_teams_data)]
+        teams = (transpose_data[0])[1:]
+        league_teams[league_name] = teams
+
+    for league_name, team_list in league_teams.items():
+        if team in team_list:
+            return league_name
+            
 
 def get_team_data(team):
     """
@@ -142,6 +175,8 @@ def main():
     print("Example: Manchester United or Arsenal\n")
     home_team = input_home_team()
     away_team = input_away_team(home_team)
+    get_team_league(home_team)
+    # get_team_league(away_team)
     home_team_data = get_team_data(home_team)
     away_team_data = get_team_data(away_team)
     home_result = result_calculator(home_team_data, "home")
