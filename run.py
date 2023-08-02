@@ -43,11 +43,11 @@ def input_away_team(home_team):
     return away_team, entry_check[1]
 
 def validate_team_entry(team_entry, home_team):
-    premier_league_worksheet = SHEET.worksheet("PremierLeague")
-    la_liga_worksheet = SHEET.worksheet("LaLiga")
-    serie_a_worksheet = SHEET.worksheet("SerieA")
+    premier_league_worksheet = SHEET.worksheet("Premier League")
+    la_liga_worksheet = SHEET.worksheet("La Liga")
+    serie_a_worksheet = SHEET.worksheet("Serie A")
     bundesliga_worksheet = SHEET.worksheet("Bundesliga")
-    ligue_1_worksheet = SHEET.worksheet("Ligue1")
+    ligue_1_worksheet = SHEET.worksheet("Ligue 1")
 
     premier_league_data = premier_league_worksheet.get_all_values()
     la_liga_data = la_liga_worksheet.get_all_values()
@@ -56,11 +56,11 @@ def validate_team_entry(team_entry, home_team):
     ligue_1_data = ligue_1_worksheet.get_all_values()
 
     europe_leagues_data = {
-        "PremierLeague": premier_league_data,
-        "LaLiga": la_liga_data,
-        "SerieA": serie_a_data,
+        "Premier League": premier_league_data,
+        "La Liga": la_liga_data,
+        "Serie A": serie_a_data,
         "Bundesliga": bundesliga_data,
-        "Ligue1": ligue_1_data
+        "Ligue 1": ligue_1_data
     }
 
     league_teams = {}
@@ -79,7 +79,7 @@ def validate_team_entry(team_entry, home_team):
     else:
         print(f"\nSorry but {team_entry} is not in the Premier League\n")
     
-    return False
+    return False, league_name
             
 
 def get_team_data(team, league_name):
