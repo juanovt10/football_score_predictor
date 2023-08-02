@@ -28,8 +28,8 @@ def input_home_team():
 def validate_team_entry(team_entry, home_team):
     """
     Inside here, it will transpose the columns to rows to have a list will all the 
-    Premier League teams. Then it will compare the value imputted by the user to see 
-    if the team inputted is part of the premier league. 
+    Europe top 5 league teams. Then it will compare the value imputted by the user 
+    to see if the team inputted is part of these leagues. 
     """
 
     premier_league_worksheet = SHEET.worksheet("PremierLeague")
@@ -51,7 +51,9 @@ def validate_team_entry(team_entry, home_team):
     for league_teams in europe_leagues_original_data:
         transpose_data = [list(row) for row in zip(*league_teams)]
         teams = (transpose_data[0])[1:]
-        europe_top_league_teams.append(teams)
+        europe_top_league_teams.extend(teams)
+    
+    print(europe_top_league_teams)
 
     for team in europe_top_league_teams:
         if team_entry == team and team_entry != home_team:
@@ -147,4 +149,4 @@ def main():
 
     print(f"The result is: {home_team} {home_result} - {away_result} {away_team}")
 
-# main()
+main()
