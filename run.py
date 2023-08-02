@@ -1,5 +1,6 @@
 import gspread
 from google.oauth2.service_account import Credentials
+from fuzzywuzzy import fuzz
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -22,10 +23,10 @@ def input_home_team():
         entry_check = validate_team_entry(home_team, "")
 
         if entry_check[0]:
-            print(f'\nHome team: {home_team}, league: {entry_check[1]}\n')
+            print(f'\nHome team: {entry_check[2]}, league: {entry_check[1]}\n')
             break
 
-    return home_team, entry_check[1]
+    return entry_check[2], entry_check[1]
 
 def input_away_team(home_team):
     """
@@ -37,10 +38,22 @@ def input_away_team(home_team):
         entry_check = validate_team_entry(away_team, home_team)
 
         if entry_check[0]:
-            print(f'\nAway team: {away_team}, league: {entry_check[1]}\n')
+            print(f'\nAway team: {entry_check[2]}, league: {entry_check[1]}\n')
             break
 
-    return away_team, entry_check[1]
+    return entry_check[2], entry_check[1]
+
+def suggest_team(input_team, teams_list):
+    best_match = None
+    highest_ratio = 0
+
+    for team in teams_list:
+        ratio = fuzz.ratio(input_team.lower(), team.lower())
+        if ratio > highest_ratio:
+            highest_ratio = ratio
+            best_match = team
+
+    return best_match, highest_ratio
 
 def validate_team_entry(team_entry, home_team):
     premier_league_worksheet = SHEET.worksheet("Premier League")
@@ -72,14 +85,29 @@ def validate_team_entry(team_entry, home_team):
 
     for league_name, team_list in league_teams.items():
         if team_entry in team_list and team_entry != home_team:
-            return True, league_name
+            return True, league_name, team_entry
+
+    europe_teams_list = []
+
+    for value_list in league_teams.values():
+        europe_teams_list.extend(value_list)
+
+    suggested_team_info = suggest_team(team_entry, europe_teams_list)
+    
+    if suggested_team_info[1] > 70:
+        print(f"\nDid you mean '{suggested_team_info[0]}'?")
+        confirm_input = input("Enter 'Y' for Yes or 'N' for No:\n").strip().lower()
+        if confirm_input == "y":
+                for league_name, team_list in league_teams.items():
+                    if suggested_team_info[0] in team_list and suggested_team_info[0] != home_team:
+                        return True, league_name, suggested_team_info[0]
     
     if team_entry == home_team:
         print(f"\nSorry but {team_entry} cannot be both the home and away team\n")        
     else:
         print(f"\nSorry but {team_entry} is not in the Premier League\n")
     
-    return False, league_name
+    return False, league_name, suggested_team_info[0]
             
 
 def get_team_data(team, league_name):
