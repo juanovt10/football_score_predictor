@@ -105,7 +105,7 @@ def validate_team_entry(team_entry, home_team):
     if team_entry == home_team:
         print(f"\nSorry but {team_entry} cannot be both the home and away team\n")        
     else:
-        print(f"\nSorry but {team_entry} is not in the Premier League\n")
+        print(f"\nSorry but {team_entry} is not in Europe's top 5 leagues\n")
     
     return False, league_name, suggested_team_info[0]
             
@@ -167,9 +167,10 @@ def result_calculator(stats, location):
     return score
 
 def main():
-    print("Welcome to the 2023/24 Premier League season predictor. Enter the teams and based in the last 5 seasons performance, find out the score!\n")
-    print("Note that this program only assesses the Premier League 2023/24 teams")
-    print("Example: Manchester United or Arsenal\n")
+    print("Welcome to the 2023/24 season foorball predictor. Enter the teams and based in the last 5 seasons performance, find out the score!\n")
+    print("Note that this program only assesses Europe's top 5 leagues' teams:")
+    print("Premier League (ENG), La Liga (ESP), Serie A (ITA), Bundesliga (GER) and Ligue 1 (FRA)\n")
+    print("Example: Manchester United, Real Madrid, Inter, PSG, Bayern Munich\n")
     home_team_info = input_home_team()
     away_team_info = input_away_team(home_team_info[0])
     home_team_data = get_team_data(home_team_info[0], home_team_info[1])
