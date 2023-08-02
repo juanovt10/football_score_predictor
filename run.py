@@ -94,11 +94,11 @@ def get_team_league(team):
     ligue_1_data = ligue_1_worksheet.get_all_values()
 
     europe_leagues_data = {
-        "Premier League": premier_league_data,
-        "La Liga": la_liga_data,
-        "Serie A": serie_a_data,
+        "PremierLeague": premier_league_data,
+        "LaLiga": la_liga_data,
+        "SerieA": serie_a_data,
         "Bundesliga": bundesliga_data,
-        "Ligue 1": ligue_1_data
+        "Ligue1": ligue_1_data
     }
 
     league_teams = {}
@@ -113,17 +113,17 @@ def get_team_league(team):
             return league_name
             
 
-def get_team_data(team):
+def get_team_data(team, league_name):
     """
     This function scans the spreadsheet and collects the row (list) of the stats of
     the inputted teams. It then, calculate a weighted average of each stat by giving
     more weight to latest season stats.
     """
-    premier_league_worksheet = SHEET.worksheet("PremierLeague")
-    original_data = premier_league_worksheet.get_all_values()
+    league_worksheet = SHEET.worksheet(league_name)
+    league_data = league_worksheet.get_all_values()
     
     str_data = []
-    for team_data in original_data:
+    for team_data in league_data:
         if team_data[0] == team:
             str_data = team_data[1:]
             break
@@ -175,10 +175,10 @@ def main():
     print("Example: Manchester United or Arsenal\n")
     home_team = input_home_team()
     away_team = input_away_team(home_team)
-    get_team_league(home_team)
-    # get_team_league(away_team)
-    home_team_data = get_team_data(home_team)
-    away_team_data = get_team_data(away_team)
+    home_team_league = get_team_league(home_team)
+    away_team_league = get_team_league(away_team)
+    home_team_data = get_team_data(home_team, home_team_league)
+    away_team_data = get_team_data(away_team, away_team_league)
     home_result = result_calculator(home_team_data, "home")
     away_result = result_calculator(away_team_data, "away")
 
