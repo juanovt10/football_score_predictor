@@ -121,6 +121,10 @@ def validate_team_entry(team_entry, home_team):
         if team_entry in team_list and team_entry != home_team:
             return True, league_name, team_entry
 
+    if team_entry == home_team:
+        print(f"""\nSorry but {team_entry} cannot be both the home and away team\n""")
+        return False, league_name, team_entry
+
     europe_teams_list = []
 
     for value_list in league_teams.values():
@@ -142,11 +146,7 @@ def validate_team_entry(team_entry, home_team):
             else: 
                 print(f"\nInvalid answer: {confirm_input}")
 
-    if team_entry == home_team:
-        print(f"""\nSorry but {team_entry} cannot be both the home and away team\n""")
-    else:
-        print(f"""\nSorry but we couldn't find a match for {team_entry}. If you are sure that {team_entry} plays in Europe's top 5 leagues, try to check for typos or an alternative name for the team\n""")
-
+    print(f"""\nSorry but we couldn't find a match for {team_entry}. If you are sure that {team_entry} plays in Europe's top 5 leagues, try to check for typos or an alternative name for the team\n""")
     return False, league_name, suggested_team_info[0]
 
 
