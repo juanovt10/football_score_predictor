@@ -13,6 +13,7 @@ SCROPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCROPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('europe_football_leagues')
 
+
 def input_home_team():
     """
     Requests the home team to retrive the previous season statistics
@@ -27,6 +28,7 @@ def input_home_team():
             break
 
     return entry_check[2], entry_check[1]
+
 
 def input_away_team(home_team):
     """
@@ -43,6 +45,7 @@ def input_away_team(home_team):
 
     return entry_check[2], entry_check[1]
 
+
 def suggest_team(input_team, teams_list):
     best_match = None
     highest_ratio = 0
@@ -54,6 +57,7 @@ def suggest_team(input_team, teams_list):
             best_match = team
 
     return best_match, highest_ratio
+
 
 def validate_team_entry(team_entry, home_team):
     premier_league_worksheet = SHEET.worksheet("Premier League")
@@ -93,22 +97,22 @@ def validate_team_entry(team_entry, home_team):
         europe_teams_list.extend(value_list)
 
     suggested_team_info = suggest_team(team_entry, europe_teams_list)
-    
+
     if suggested_team_info[1] > 70:
         print(f"\nDid you mean '{suggested_team_info[0]}'?")
         confirm_input = input("Enter 'Y' for Yes or 'N' for No:\n").strip().lower()
         if confirm_input == "y":
-                for league_name, team_list in league_teams.items():
-                    if suggested_team_info[0] in team_list and suggested_team_info[0] != home_team:
-                        return True, league_name, suggested_team_info[0]
-    
+            for league_name, team_list in league_teams.items():
+                if suggested_team_info[0] in team_list and suggested_team_info[0] != home_team:
+                    return True, league_name, suggested_team_info[0]
+
     if team_entry == home_team:
-        print(f"\nSorry but {team_entry} cannot be both the home and away team\n")        
+        print(f"\nSorry but {team_entry} cannot be both the home and away team\n")
     else:
         print(f"\nSorry but {team_entry} is not in Europe's top 5 leagues\n")
-    
+
     return False, league_name, suggested_team_info[0]
-            
+
 
 def get_team_data(team, league_name):
     """
@@ -118,7 +122,7 @@ def get_team_data(team, league_name):
     """
     league_worksheet = SHEET.worksheet(league_name)
     league_data = league_worksheet.get_all_values()
-    
+
     str_data = []
     for team_data in league_data:
         if team_data[0] == team:
@@ -127,7 +131,7 @@ def get_team_data(team, league_name):
 
     data = [float(i) for i in str_data]
 
-    stat_indexes = [0,1,2,3,4,5]
+    stat_indexes = [0, 1, 2, 3, 4, 5]
 
     stats_weighted_averages = []
 
@@ -139,14 +143,14 @@ def get_team_data(team, league_name):
         stats_weighted_averages.append(stat_weighted_average / 15)
 
     return stats_weighted_averages
-    
+
 
 def result_calculator(stats, location):
     """
-    This function multyply each stat for a factor and then adds them all up to 
+    This function multyply each stat for a factor and then adds them all up to
     provide a match
     """
-    score = 0 
+    score = 0
     score += int(stats[0] * 0.5)
     score += int(stats[1] * 0.25)
     score += int(stats[2] * 0.75)
@@ -156,7 +160,7 @@ def result_calculator(stats, location):
 
     if location == "home":
         score += 1
-    else: 
+    else:
         score -= 1
 
     if score > 5:
@@ -165,6 +169,7 @@ def result_calculator(stats, location):
         score = 0
 
     return score
+
 
 def main():
     print("Welcome to the 2023/24 season foorball predictor. Enter the teams and based in the last 5 seasons performance, find out the score!\n")
@@ -179,5 +184,6 @@ def main():
     away_result = result_calculator(away_team_data, "away")
 
     print(f"The result is: {home_team_info[0]} {home_result} - {away_result} {away_team_info[0]}")
+
 
 main()
