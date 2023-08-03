@@ -47,6 +47,13 @@ def input_away_team(home_team):
 
 
 def suggest_team(input_team, teams_list):
+    """
+    In case the user's input is not a direct match with the strings from the
+    spreadsheet. This function, scans the list of teams and use the fuzz method
+    to check the similarity ratio, then the functions returns the best match
+    from the scan, and the ratio so it can be checked in the
+    validate_team_entry() function
+    """
     best_match = None
     highest_ratio = 0
 
@@ -60,6 +67,29 @@ def suggest_team(input_team, teams_list):
 
 
 def validate_team_entry(team_entry, home_team):
+    """
+    It retrives the data from all 5 worksheets.
+
+    It then places the data in a dictionary where the keys are the league names
+    and the values are the data from each worksheet.
+
+    Then it extracts the list of teams, and added to a new dictionary where
+    the keys are the league names and the values are a list of teams of each
+    league.
+
+    It then scans the lists of the dictionary to find a match, if it finds it,
+    it returns a boolean, the league and the team entry.
+
+    In the case that it doesn't find a match it calls the suggest_team()
+    function. This function recives the user team entry and the list of all
+    the teams of the 5 leagues, it then returns the best match and the match
+    ratio.
+
+    Then the function just assess if the ratio is high enough, provides a
+    suggestion to the user, and then the user needs to confirm. If it does,
+    then the function will return the league, team_suggestion and the boolean.
+    If the user does not confirm, it returns the same but with a False boolean.
+    """
     premier_league_worksheet = SHEET.worksheet("Premier League")
     la_liga_worksheet = SHEET.worksheet("La Liga")
     serie_a_worksheet = SHEET.worksheet("Serie A")
@@ -100,14 +130,16 @@ def validate_team_entry(team_entry, home_team):
 
     if suggested_team_info[1] > 70:
         print(f"\nDid you mean '{suggested_team_info[0]}'?")
-        confirm_input = input("Enter 'Y' for Yes or 'N' for No:\n").strip().lower()
+        confirm_input = input("""Enter 'Y' for Yes or 'N' for No:
+        \n""").strip().lower()
         if confirm_input == "y":
             for league_name, team_list in league_teams.items():
                 if suggested_team_info[0] in team_list and suggested_team_info[0] != home_team:
                     return True, league_name, suggested_team_info[0]
 
     if team_entry == home_team:
-        print(f"\nSorry but {team_entry} cannot be both the home and away team\n")
+        print(f"""\nSorry but {team_entry} cannot be both the home and
+        away team\n""")
     else:
         print(f"\nSorry but {team_entry} is not in Europe's top 5 leagues\n")
 
@@ -116,9 +148,9 @@ def validate_team_entry(team_entry, home_team):
 
 def get_team_data(team, league_name):
     """
-    This function scans the spreadsheet and collects the row (list) of the stats of
-    the inputted teams. It then, calculate a weighted average of each stat by giving
-    more weight to latest season stats.
+    This function scans the spreadsheet and collects the row (list) of the
+    stats of the inputted teams. It then, calculate a weighted average of
+    each stat by giving more weight to latest season stats.
     """
     league_worksheet = SHEET.worksheet(league_name)
     league_data = league_worksheet.get_all_values()
@@ -172,10 +204,14 @@ def result_calculator(stats, location):
 
 
 def main():
-    print("Welcome to the 2023/24 season foorball predictor. Enter the teams and based in the last 5 seasons performance, find out the score!\n")
-    print("Note that this program only assesses Europe's top 5 leagues' teams:")
-    print("Premier League (ENG), La Liga (ESP), Serie A (ITA), Bundesliga (GER) and Ligue 1 (FRA)\n")
-    print("Example: Manchester United, Real Madrid, Inter, PSG, Bayern Munich\n")
+    print("""Welcome to the 2023/24 season foorball predictor. Enter the teams
+    and based in the last 5 seasons performance, find out the score!\n""")
+    print("""Note that this program only assesses Europe's top 5 leagues'
+    teams:""")
+    print("""Premier League (ENG), La Liga (ESP), Serie A (ITA), Bundesliga
+    (GER) and Ligue 1 (FRA)\n""")
+    print("""Example: Manchester United, Real Madrid, Inter, PSG,
+    Bayern Munich\n""")
     home_team_info = input_home_team()
     away_team_info = input_away_team(home_team_info[0])
     home_team_data = get_team_data(home_team_info[0], home_team_info[1])
@@ -183,7 +219,8 @@ def main():
     home_result = result_calculator(home_team_data, "home")
     away_result = result_calculator(away_team_data, "away")
 
-    print(f"The result is: {home_team_info[0]} {home_result} - {away_result} {away_team_info[0]}")
+    print(f"""The result is: {home_team_info[0]} {home_result} -
+    {away_result} {away_team_info[0]}""")
 
 
 main()
