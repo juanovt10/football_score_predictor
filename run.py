@@ -129,19 +129,23 @@ def validate_team_entry(team_entry, home_team):
     suggested_team_info = suggest_team(team_entry, europe_teams_list)
 
     if suggested_team_info[1] > 70:
-        print(f"\nDid you mean '{suggested_team_info[0]}'?")
-        confirm_input = input("""Enter 'Y' for Yes or 'N' for No:
-        \n""").strip().lower()
-        if confirm_input == "y":
-            for league_name, team_list in league_teams.items():
-                if suggested_team_info[0] in team_list and suggested_team_info[0] != home_team:
-                    return True, league_name, suggested_team_info[0]
+        while True:
+            print(f"\nDid you mean '{suggested_team_info[0]}'?")
+            confirm_input = input("Enter 'Y' for Yes or 'N' for No:\n").strip().lower()
+            if confirm_input == "y":
+                for league_name, team_list in league_teams.items():
+                    if suggested_team_info[0] in team_list and suggested_team_info[0] != home_team:
+                        return True, league_name, suggested_team_info[0] 
+                break
+            elif confirm_input == "n":
+                break
+            else: 
+                print(f"\nInvalid answer: {confirm_input}")
 
     if team_entry == home_team:
-        print(f"""\nSorry but {team_entry} cannot be both the home and
-        away team\n""")
+        print(f"""\nSorry but {team_entry} cannot be both the home and away team\n""")
     else:
-        print(f"\nSorry but {team_entry} is not in Europe's top 5 leagues\n")
+        print(f"""\nSorry but we couldn't find a match for {team_entry}. If you are sure that {team_entry} plays in Europe's top 5 leagues, try to check for typos or an alternative name for the team\n""")
 
     return False, league_name, suggested_team_info[0]
 
