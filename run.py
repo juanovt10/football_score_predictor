@@ -283,6 +283,48 @@ def result_calculator(home_stats, away_stats):
 
     return home_score, away_score
 
+def find_mode():
+    print("Please enter the teams you want to find out the score")
+    print("Example: Manchester United, Real Madrid, Inter, PSG, Bayern Munich\n")
+    home_team_info = input_home_team()
+    away_team_info = input_away_team(home_team_info[0])
+    home_team_data = get_team_data(home_team_info[0], home_team_info[1])
+    away_team_data = get_team_data(away_team_info[0], away_team_info[1])
+    result = result_calculator(home_team_data, away_team_data)
+
+    print(f"The result is: {home_team_info[0]} {result[0]} - {result[1]} {away_team_info[0]}")
+
+
+def guess_mode():
+    random_teams = retrive_random_teams()
+    print("\nWhat do you think will be the score between these two teams?")
+    print(f"Home team: {random_teams[0]}")
+    print(f"Away team: {random_teams[1]}")
+    score_input = input_match_score()
+
+    home_team_info = validate_team_entry(random_teams[0], "")
+    away_team_info = validate_team_entry(random_teams[1], "")
+
+    home_team_data = get_team_data(home_team_info[2], home_team_info[1])
+    away_team_data = get_team_data(away_team_info[2], away_team_info[1])
+    result = result_calculator(home_team_data, away_team_data)
+
+    guess_feedback = score_comparisson(score_input, result)
+
+    print(guess_feedback + " " + f"The result is: {home_team_info[2]} {result[0]} - {result[1]} {away_team_info[2]}")
+
+def restart_program():
+    while True: 
+        print("\nDo you want to use the program again?")
+        use_again = input("Enter 'Y' for yes or 'N' for no:\n").strip().lower()
+        if use_again == 'y':
+            break
+        elif use_again == 'n':
+            print("\nThank you for using the 2023/24 footbal predictor!")
+            exit()
+        else:
+            print(f"\nInvalid input: {use_again}. Please enter 'Y' for yes or 'N' for no")
+
 
 def main():
     print("""Welcome to the 2023/24 season foorball predictor. This program
@@ -297,57 +339,14 @@ def main():
         print("Enter program mode:")
         user_decision = input("Enter 'find' or 'guess':\n").strip().lower()
         if user_decision == 'find':
-            print("Please enter the teams you want to find out the score")
-            print("""Example: Manchester United, Real Madrid, Inter, PSG,
-            Bayern Munich\n""")
-            home_team_info = input_home_team()
-            away_team_info = input_away_team(home_team_info[0])
-            home_team_data = get_team_data(home_team_info[0], home_team_info[1])
-            away_team_data = get_team_data(away_team_info[0], away_team_info[1])
-            result = result_calculator(home_team_data, away_team_data)
+            find_mode()
 
-            print(f"The result is: {home_team_info[0]} {result[0]} - {result[1]} {away_team_info[0]}")
-
-            while True: 
-                print("\nDo you want to use the program again?")
-                use_again = input("Enter 'Y' for yes or 'N' for no:\n").strip().lower()
-                if use_again == 'y':
-                    break
-                elif use_again == 'n':
-                    print("\nThank you for using the 2023/24 footbal predictor!")
-                    exit()
-                else:
-                    print(f"\nInvalid input: {use_again}. Please enter 'Y' for yes or 'N' for no")
+            restart_program()
 
         elif user_decision == 'guess':
-            random_teams = retrive_random_teams()
-            print("\nWhat do you think will be the score between these two teams?")
-            print(f"Home team: {random_teams[0]}")
-            print(f"Away team: {random_teams[1]}")
-            score_input = input_match_score()
+            guess_mode()
 
-            home_team_info = validate_team_entry(random_teams[0], "")
-            away_team_info = validate_team_entry(random_teams[1], "")
-
-            home_team_data = get_team_data(home_team_info[2], home_team_info[1])
-            away_team_data = get_team_data(away_team_info[2], away_team_info[1])
-            result = result_calculator(home_team_data, away_team_data)
-
-            guess_feedback = score_comparisson(score_input, result)
-
-            print(guess_feedback + " " + f"The result is: {home_team_info[2]} {result[0]} - {result[1]} {away_team_info[2]}")
-            
-            while True: 
-                print("\nDo you want to use the program again?")
-                use_again = input("Enter 'Y' for yes or 'N' for no:\n").strip().lower()
-                if use_again == 'y':
-                    break
-                elif use_again == 'n':
-                    print("\nThank you for using the 2023/24 footbal predictor!")
-                    exit()
-                else:
-                    print(f"\nInvalid input: {use_again}. Please enter 'Y' for yes or 'N' for no")
-
+            restart_program()
         else:
             print(f"\nInvalid answer: {user_decision}")
 
