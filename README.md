@@ -1,6 +1,6 @@
 # Europe's football top 5 leagues 2023/24 predictor
 
-This european football predictor is a python tool is designed to help users forecast match scores between two elite teams from the top European leagues. By analyzing their performance over the past five seasons, the tool generates accurate score predictions, offering valuable insights for football enthusiasts.
+This european football predictor is a python tool is designed to help users forecast match scores between two teams from the top European leagues. By analyzing their performance over the past five seasons, the tool generates accurate score predictions, offering valuable insights for football enthusiasts.
 
 This project runs in the Code Institue mock terminal on Heroku.
 
@@ -24,13 +24,37 @@ This football predictor utilizes data from the top 5 European leagues spanning f
 
 Upon launching the program, users are welcomed and provided with a concise explanation of its functionalities, as well as the leagues it can evaluate. 
 
-Subsequently, the program prompts the user to input the home and away teams. Leveraging their past season data and considering the home advantage, it calculates the likely match outcome. Home teams enjoy the "home" advantage, which is factored into the result prediction.
+The user has two choices, find out a score by inputing two teams or guess a score between two teams randomly displayed.
+
+## Find out score mode
+
+The program prompts the user to input the home and away teams. Leveraging their past season data and considering the home advantage, it calculates the likely match outcome. Home teams enjoy the "home" advantage, which is factored into the result prediction.
 
 In scenarios where the user inputs a team name that does not precisely match the data spreadsheet, the program incorporates a percentage match feature. It then suggests a team based on this matching percentage and asks for user confirmation before proceeding further. This ensures accurate team selection and enhances the overall user experience.
 
 If the user fails to provide an input with a match larger than 70%, the program will promptly provide feedback indicating that the input team is not part of Europe's top five leagues. Following that, it will request the user to re-enter the team name, ensuring compatibility with the supported leagues for accurate predictions.
 
+## Guess score mode
+
+In this mode, the program scans teams from the five European leagues and randomly selects two for users to guess the score of a match between them. Users must adhere to a specific format when entering scores (two numbers separated by a hyphen). If scores are not input in the correct format, an error message is displayed, prompting users to re-enter the input.
+
+Upon correct input of the score, the program assesses the result based on calculations performed in the "find out score" mode. It then compares this result with the user's input and delivers feedback indicating the accuracy of the guess.
+
 # Project planning
+
+The purpose of the project is to process the data of the past 5 seasons of the european leagues and find out scores. The project features were defined by the following flow chart:
+
+![flow chart p1](assets/readme_images/flow_chart_p1.png)
+![flow chart p2](assets/readme_images/flow_chart_p2.png)
+
+However, the process was break down into 4 stages: 
+
+1. Begin by integrating data for a single league into the datasheet, ensuring the functionality of the "find out score" mode.
+2. Once the initial mode is verified, extend the implementation to encompass the remaining four European leagues, while maintaining the effectiveness of the "find out score" mode.
+3. Enhance the program by incorporating a team suggestion function, recognizing that football teams often have multiple recognized names.
+4. Elevate the program's capabilities by introducing the "guess score" mode. This mode will present users with two randomly selected teams, prompt for precise user input, and subsequently compare the user's input against the calculated outcome.e 
+
+The presented flowchart showcases a notable omission—the inclusion of the head-to-head results for incorporation into the score result calculation. To address this, an API connection is recommended for retrieving this dynamic statistic. This approach is favored due to the substantial volume of data involved. While each team competes in 38 league matches annually, additional engagements like regional and international cups further compound the dataset. Leveraging an API streamlines the retrieval process by accessing specialized databases, expediting requests that would otherwise be time-intensive when dealing with static data.
 
 # Features
 
@@ -42,7 +66,10 @@ If the user fails to provide an input with a match larger than 70%, the program 
     * To account for the home advantage, it adds 1 goal for the home team and subtracts 1 goal from the away team.
     * To provide a realistic result, the program sets a maximum goal output of 5 goals. 
 
-- Guessing score *** OPTION
+- Guessing score
+    * The program scans all 5 worksheets and selects two random teams for the user to guess a score between them
+    * The program is designed to access only one format of a match score, this is two integers separated with a hyphen e.g. 2-3, 4-1, 1-0. 
+    * Then the program runs the same calculations and compares the inputted result with the calculated result and provides feedback to their user about their guess
 
 - Team suggestion
     * In football, teams can be known by various names, including nicknames, acronyms, or simplified versions of their official names. For instance: 
@@ -55,9 +82,8 @@ If the user fails to provide an input with a match larger than 70%, the program 
 
 ## Future features
 
-API connection to avoid static data
-Regression or Manchine learning model for it to be more dynamic 
-Check for head-to-head results
+- Use API connection to retrive data from a specific database instead if using static data 
+- When using an API connetion, a regression model can be used in conjuction of multiple statistics to arrive to a more accurate result
 
 # Data model
 For this project, I employed static data retrieved from [FootyStats](https://footystats.org/). The following statistics were utilized to process and calculate the match result:
@@ -68,6 +94,7 @@ For this project, I employed static data retrieved from [FootyStats](https://foo
 - Goals scored/match
 - xG against (expected goals conceded/match)
 - Goals conceded/match
+- Clean sheet percentage
 
 ## Data collection and manipulation
 
@@ -75,9 +102,9 @@ The data collection process involved organizing the statistics for each team int
 
 It is important to note that European football leagues operate on a relegation/promotion basis. This means that teams ending a season in the bottom part of the table (typically the last three positions) get relegated to a lower division, while the winners of the lower division get promoted to the first division.
 
-Due to this system, teams are constantly moving between divisions, resulting in discrepancies in statistics. To address this, the data was amended and corrected accordingly. For teams that played in lower divisions in the past five seasons, positive statistics (such as xG, possession, shots, and goals) were reduced by 20%, while negative statistics (like xG against and goals conceded) were increased by 20%. This adjustment ensures a fair comparison between teams playing at different levels of football.
+Due to this system, teams are constantly moving between divisions, resulting in discrepancies in statistics due to the different football level. To address this, the data was amended and corrected accordingly. For teams that played in lower divisions in the past five seasons, offensive statistics (such as xG, possession, shots, and goals) were reduced by 20%, while defensive statistics (like xG against and goals conceded) were increased by 20%. This adjustment ensures a fair comparison between teams playing at different levels of football.
 
-## Data processing
+## Data processing*
 
 The program scans the spreadsheet to retrieve statistics for the user-inputted teams, calculating a weighted average by assigning higher importance to more recent seasons. This approach accounts for the dynamic nature of football teams, which can experience exponential growth or decline based on their performance.
 
@@ -87,18 +114,19 @@ After processing the weighted averages, these are multuply by a factor to provid
 
 - xG * 0.5 
 - Possession * 0.25
-- Shots/conversion rate * 0.75
-- Goals * 1 
+- Shots/conversion rate * 0.5
+- Goals * 0.5
 - xG against * -0.5 
-- Goals conceded * -1
+- Goals conceded * -0.75
+- Clean sheet percentage * -0.5
 
-Additionally, home teams typically enjoy an advantage, benefiting from the majority of supporters and familiar conditions. Consequently, one goal was added to home teams, while one goal was subtracted from away teams.
+Additionally, home teams typically enjoy an advantage, benefiting from the majority of supporters and familiar conditions. Consequently, one goal was added to home teams.
 
 To ensure more realistic predictions, a maximum limit of 5 goals was set, preventing results that exceeded this threshold. Similarly, to maintain realism, a minimum limit of 0 goals was applied to teams with extremely negative statistics, preventing them from obtaining negative scores. 
 
 # Testing
 
-I have mtested the project by performing the following tests: 
+I have tested the project by performing the following tests: 
 
 - Passed the code throigh a PEP8 linter and confirm there are no problems
 - Provide invalid inputs, such as numbers or strings that do not match or provide a realistic match for the teams in these leagues
@@ -120,7 +148,7 @@ This function was then called in the validate_team_entry(). For this I tried to 
 
 ## Remaining bugs
 
-- No bugs remaining
+- There is a limitation of requests per minute that this program can assess. Threfore, if the user decides to use the program multiple times, eventually the program will display an error message stating that the program exceeded the limit of API requests. 
 
 ## Validator testing
 
