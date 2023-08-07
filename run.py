@@ -102,6 +102,8 @@ def validate_team_entry(team_entry, home_team):
     bundesliga_data = bundesliga_worksheet.get_all_values()
     ligue_1_data = ligue_1_worksheet.get_all_values()
 
+# Dictionary for all de leagues data:
+
     europe_leagues_data = {
         "Premier League": premier_league_data,
         "La Liga": la_liga_data,
@@ -112,11 +114,14 @@ def validate_team_entry(team_entry, home_team):
 
     league_teams = {}
 
+# Transpose data, get lists of league teams and fill them as the values of 
+# the league team dictionary
     for league_name, league_teams_data in europe_leagues_data.items():
         transpose_data = [list(row) for row in zip(*league_teams_data)]
         teams = (transpose_data[0])[1:]
         league_teams[league_name] = teams
 
+#Check values of the list in dicitonary
     for league_name, team_list in league_teams.items():
         if team_entry in team_list and team_entry != home_team:
             return True, league_name, team_entry
@@ -167,44 +172,47 @@ def get_team_data(team, league_name):
 
     data = [float(i) for i in str_data]
 
-    stat_indexes = [0, 1, 2, 3, 4, 5]
+    stat_indexes = [0, 1, 2, 3, 4, 5, 6]
 
     stats_weighted_averages = []
 
     for index in stat_indexes:
         stat_weighted_average = 0
-        for i in range(index, len(data), 6):
-            stat_weighted_average += ((data[i]) * (6-(i/6)))
+        for i in range(index, len(data), 7):
+            stat_weighted_average += ((data[i]) * (7-(i/7)))
 
         stats_weighted_averages.append(stat_weighted_average / 15)
 
     return stats_weighted_averages
 
 
-def result_calculator(stats, location):
+def result_calculator(home_stats, away_stats):
     """
     This function multyply each stat for a factor and then adds them all up to
     provide a match
     """
-    score = 0
-    score += int(stats[0] * 0.5)
-    score += int(stats[1] * 0.25)
-    score += int(stats[2] * 0.75)
-    score += int(stats[3] * 1)
-    score += int(stats[4] * (-0.5))
-    score += int(stats[5] * (-1))
+    score_factors = [0.5, 0.25, 0.75, 1, -0.5, -1, -0.25]
 
-    if location == "home":
-        score += 1
-    else:
-        score -= 1
+    home_score_factors = [x * y for x, y in zip(home_stats, score_factors)]
+    away_score_factors = [x * y for x, y in zip(away_stats, score_factors)]
 
-    if score > 5:
-        score = 5
-    elif score < 0:
-        score = 0
+    home_positive_factors = home_score_factors[:4]
+    away_positive_factors = away_score_factors[:4]
 
-    return score
+    home_negative_factors = home_score_factors[-3:]
+    away_negative_factors = away_score_factors[-3:]
+
+    home_score = int(sum(home_positive_factors) + sum(away_negative_factors))
+    away_score = int(sum(away_positive_factors) + sum(home_negative_factors))
+
+    # home_score += 1
+    # away_score -= 1
+
+    home_score = max(0, min(5, home_score))
+    away_score = max(0, min(5, away_score))
+
+    print(f"{home_score} - {away_score}")
+    return home_score, away_score
 
 
 def main():
@@ -220,11 +228,11 @@ def main():
     away_team_info = input_away_team(home_team_info[0])
     home_team_data = get_team_data(home_team_info[0], home_team_info[1])
     away_team_data = get_team_data(away_team_info[0], away_team_info[1])
-    home_result = result_calculator(home_team_data, "home")
-    away_result = result_calculator(away_team_data, "away")
+    result = result_calculator(home_team_data, away_team_data)
 
-    print(f"""The result is: {home_team_info[0]} {home_result} -
-    {away_result} {away_team_info[0]}""")
+
+    # print(f"""The result is: {home_team_info[0]} {home_result} -
+    # {away_result} {away_team_info[0]}""")
 
 
 main()
