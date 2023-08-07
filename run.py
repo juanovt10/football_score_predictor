@@ -1,4 +1,5 @@
 import gspread
+import random
 from google.oauth2.service_account import Credentials
 from fuzzywuzzy import fuzz
 
@@ -102,7 +103,7 @@ def validate_team_entry(team_entry, home_team):
     bundesliga_data = bundesliga_worksheet.get_all_values()
     ligue_1_data = ligue_1_worksheet.get_all_values()
 
-# Dictionary for all de leagues data:
+    # Dictionary for all de leagues data:
 
     europe_leagues_data = {
         "Premier League": premier_league_data,
@@ -114,22 +115,24 @@ def validate_team_entry(team_entry, home_team):
 
     league_teams = {}
 
-# Transpose data, get lists of league teams and fill them as the values of 
-# the league team dictionary
+    # Transpose data, get lists of league teams and fill them as the values of 
+    # the league team dictionary
     for league_name, league_teams_data in europe_leagues_data.items():
         transpose_data = [list(row) for row in zip(*league_teams_data)]
         teams = (transpose_data[0])[1:]
         league_teams[league_name] = teams
 
-#Check values of the list in dicitonary
+    # Check values of the list in dicitonary
     for league_name, team_list in league_teams.items():
         if team_entry in team_list and team_entry != home_team:
             return True, league_name, team_entry
 
+    # Check if the user input the same team as away
     if team_entry == home_team:
         print(f"""\nSorry but {team_entry} cannot be both the home and away team\n""")
         return False, league_name, team_entry
 
+    # Create list with all the 5 league teams to use the suggest_team()
     europe_teams_list = []
 
     for value_list in league_teams.values():
@@ -137,6 +140,8 @@ def validate_team_entry(team_entry, home_team):
 
     suggested_team_info = suggest_team(team_entry, europe_teams_list)
 
+    # With the values of the suggest_team() check if there is a match
+    # higher than 70% and check with the user if they to confirm their input
     if suggested_team_info[1] > 70:
         while True:
             print(f"\nDid you mean '{suggested_team_info[0]}'?")
@@ -154,6 +159,71 @@ def validate_team_entry(team_entry, home_team):
     print(f"""\nSorry but we couldn't find a match for {team_entry}. If you are sure that {team_entry} plays in Europe's top 5 leagues, try to check for typos or an alternative name for the team\n""")
     return False, league_name, suggested_team_info[0]
 
+
+def retrive_random_teams():
+    premier_league_worksheet = SHEET.worksheet("Premier League")
+    la_liga_worksheet = SHEET.worksheet("La Liga")
+    serie_a_worksheet = SHEET.worksheet("Serie A")
+    bundesliga_worksheet = SHEET.worksheet("Bundesliga")
+    ligue_1_worksheet = SHEET.worksheet("Ligue 1")
+
+    premier_league_data = premier_league_worksheet.get_all_values()
+    la_liga_data = la_liga_worksheet.get_all_values()
+    serie_a_data = serie_a_worksheet.get_all_values()
+    bundesliga_data = bundesliga_worksheet.get_all_values()
+    ligue_1_data = ligue_1_worksheet.get_all_values()
+
+    # Dictionary for all de leagues data:
+
+    europe_leagues_data = {
+        "Premier League": premier_league_data,
+        "La Liga": la_liga_data,
+        "Serie A": serie_a_data,
+        "Bundesliga": bundesliga_data,
+        "Ligue 1": ligue_1_data
+    }
+
+    league_teams = {}
+
+    # Transpose data, get lists of league teams and fill them as the values of 
+    # the league team dictionary
+    for league_name, league_teams_data in europe_leagues_data.items():
+        transpose_data = [list(row) for row in zip(*league_teams_data)]
+        teams = (transpose_data[0])[1:]
+        league_teams[league_name] = teams
+
+    europe_teams_list = []
+
+    for value_list in league_teams.values():
+        europe_teams_list.extend(value_list)
+    
+    random_teams = random.sample(europe_teams_list, 2)
+    print(random_teams)
+    
+
+def input_match_score():
+    while True:
+
+        try: 
+            score_input = input("Please enter the score (e.g 2-1, 1-2, 3-0):\n")
+            home_score, away_score = map(int, score_input.split('-'))
+
+            if home_score < 0 or away_score < 0: 
+                print("Invalid score. Scores must be positive integers")
+            else:
+                return home_score, away_score
+        except ValueError:
+            print("""Invalid input. Please enter the score in the format 
+            'X-Y', where X and Y are positive integers""")
+
+
+# def score_comparisson(input_scores, calculated_scores):
+#     home_difference = calcualted_scores[0] - input_scores[0]
+#     away_difference = calculated_scores[1] - input_scores[1]
+
+#     if home_difference == 0 and away_difference == 0:
+#         return "You guest it!"
+#     elif home_difference 
 
 def get_team_data(team, league_name):
     """
@@ -210,9 +280,6 @@ def result_calculator(home_stats, away_stats):
     home_score = int(sum(home_offensive_factors) + sum(away_defensive_factors))
     away_score = int(sum(away_offensive_factors) + sum(home_defensive_factors))
 
-    # home_score += 1
-    # away_score -= 1
-
     home_score = max(0, min(5, home_score))
     away_score = max(0, min(5, away_score))
 
@@ -220,23 +287,49 @@ def result_calculator(home_stats, away_stats):
 
 
 def main():
-    print("""Welcome to the 2023/24 season foorball predictor. Enter the teams
-    and based in the last 5 seasons performance, find out the score!\n""")
+    print("""Welcome to the 2023/24 season foorball predictor. This program
+    allows you to choose between find out a score or guessing one from
+    two random teams\n""")
     print("""Note that this program only assesses Europe's top 5 leagues'
     teams:""")
     print("""Premier League (ENG), La Liga (ESP), Serie A (ITA), Bundesliga
     (GER) and Ligue 1 (FRA)\n""")
-    print("""Example: Manchester United, Real Madrid, Inter, PSG,
-    Bayern Munich\n""")
-    home_team_info = input_home_team()
-    away_team_info = input_away_team(home_team_info[0])
-    home_team_data = get_team_data(home_team_info[0], home_team_info[1])
-    away_team_data = get_team_data(away_team_info[0], away_team_info[1])
-    result = result_calculator(home_team_data, away_team_data)
+    
+    while True:
+        print("Enter program mode")
+        user_decision = input("Enter 'find' or 'guess':\n").strip().lower()
+        if user_decision == 'find':
+            print("Please enter the teams you want to find out the score")
+            print("""Example: Manchester United, Real Madrid, Inter, PSG,
+            Bayern Munich\n""")
+            home_team_info = input_home_team()
+            away_team_info = input_away_team(home_team_info[0])
+            home_team_data = get_team_data(home_team_info[0], home_team_info[1])
+            away_team_data = get_team_data(away_team_info[0], away_team_info[1])
+            result = result_calculator(home_team_data, away_team_data)
+
+            print(f"""The result is: {home_team_info[0]} {result[0]} -
+            {result[1]} {away_team_info[0]}""")
+            break
+        elif user_decision == 'guess':
+            retrive_random_teams()
+            print("What do you think will be the score between these two teams?\n")
+            print(f"Home team: {retrive_random_teams[0]}")
+            print(f"Away team: {retrive_random_teams[1]}")
+            input_match_score()
+
+            home_team_info = validate_team_entry(retrive_random_teams[0], "")
+            away_team_info = validate_team_entry(retrive_random_teams[1], "")
+            home_team_data = get_team_data(home_team_info[1], home_team_info[2])
+            away_team_data = get_team_data(away_team_info[1], away_team_info[2])
+            result = result_calculator(home_team_data, away_team_data)
+
+            print(f"""The result is: {home_team_info[0]} {result[0]} -
+            {result[1]} {away_team_info[0]}""")
+        else:
+            print(f"\nInvalid answer: {user_decision}")
 
 
-    print(f"""The result is: {home_team_info[0]} {result[0]} -
-    {result[1]} {away_team_info[0]}""")
-
-
-main()
+random = input_match_score()
+print(random)
+# main()

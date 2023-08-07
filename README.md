@@ -55,11 +55,9 @@ If the user fails to provide an input with a match larger than 70%, the program 
 
 ## Future features
 
-XFSGTHTRHRTgfoihpfiqhpigh
-
-dgfdghpahgpiadshgpfag
-
-dgijadsgidjgpdsaghadsg
+API connection to avoid static data
+Regression or Manchine learning model for it to be more dynamic 
+Check for head-to-head results
 
 # Data model
 For this project, I employed static data retrieved from [FootyStats](https://footystats.org/). The following statistics were utilized to process and calculate the match result:
