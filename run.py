@@ -191,19 +191,24 @@ def result_calculator(home_stats, away_stats):
     This function multyply each stat for a factor and then adds them all up to
     provide a match
     """
-    score_factors = [0.5, 0.25, 0.75, 1, -0.5, -1, -0.25]
+    score_factors = [0.5, 0.25, 0.5, 0.75, -0.5, -0.75, -0.5]
 
     home_score_factors = [x * y for x, y in zip(home_stats, score_factors)]
     away_score_factors = [x * y for x, y in zip(away_stats, score_factors)]
 
-    home_positive_factors = home_score_factors[:4]
-    away_positive_factors = away_score_factors[:4]
+    home_offensive_factors = home_score_factors[:4]
+    away_offensive_factors = away_score_factors[:4]
 
-    home_negative_factors = home_score_factors[-3:]
-    away_negative_factors = away_score_factors[-3:]
+    home_defensive_factors = home_score_factors[-3:]
+    away_defensive_factors = away_score_factors[-3:]
 
-    home_score = int(sum(home_positive_factors) + sum(away_negative_factors))
-    away_score = int(sum(away_positive_factors) + sum(home_negative_factors))
+    print(sum(home_offensive_factors))
+    print(sum(away_offensive_factors))
+    print(sum(home_defensive_factors))
+    print(sum(away_defensive_factors))
+
+    home_score = int(sum(home_offensive_factors) + sum(away_defensive_factors))
+    away_score = int(sum(away_offensive_factors) + sum(home_defensive_factors))
 
     # home_score += 1
     # away_score -= 1
@@ -211,7 +216,6 @@ def result_calculator(home_stats, away_stats):
     home_score = max(0, min(5, home_score))
     away_score = max(0, min(5, away_score))
 
-    print(f"{home_score} - {away_score}")
     return home_score, away_score
 
 
@@ -231,8 +235,8 @@ def main():
     result = result_calculator(home_team_data, away_team_data)
 
 
-    # print(f"""The result is: {home_team_info[0]} {home_result} -
-    # {away_result} {away_team_info[0]}""")
+    print(f"""The result is: {home_team_info[0]} {result[0]} -
+    {result[1]} {away_team_info[0]}""")
 
 
 main()
