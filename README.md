@@ -132,23 +132,23 @@ I have tested the project by performing the following tests:
 - Provide invalid inputs, such as numbers or strings that do not match or provide a realistic match for the teams in these leagues
 - Tested in my local terminal and the Code Institute Heroku terminal
 
-## Bugs 
+Most of the coding challenges centered around refining the validate_team_entry() function. At the project's outset, the focus was on ensuring exact matches, data retrieval, and precise result provision. To accomplish this, a single worksheet was scanned, data transposed, and exact matches retrieved for processing.
 
-Most of the coding challenges where located in the validate_team_entry() function. At the start of the project I wanted to focus on the features of providing an exact match and to be able to retrive and process the data and provide an accurate result. So I only needed to scan 1 workseet, transposed the data to check if there was an exact match, and then just retrive the data from the exact match. 
+Once the core functionality was robust, expansion to cover the other four leagues was necessary. This entailed not only checking team presence but also determining the league for scanning in the get_team_data() function. A get_team_league() function was introduced, utilizing a dictionary structure to categorize teams by league. This enabled accurate league detection for proper spreadsheet access in get_team_data().
 
-When the program was accuratly working, I needed to include now the scan of the ohter 4 leagues. This meant that I needed to not only needed to check if the team was in the list, but also in which league they played so I could scan the correct spreadsheet in the get_team_data() function. For this I initially created a new function called get_team_league(), where I define a directory where the keys where the league names and then values the league data, I then transposed the data of the values to get a single list of the teams per league. Then I just use another directory, with the same keys but the values now where the list of teams that played there, then was just only to scan each lists of each value, and when there was a match, retrive the key (league name), that would be used in get_team_data() to scan the correct spreadsheet. 
+Recognizing similarities between get_team_data() and validate_team_entry(), a refactoring effort emerged. The latter function, apart from allowing program continuation via boolean return, now also supplied the team's league for get_team_data() reference.
 
-After this process, I realise that teh get_team_data() and the validate_team_entry() functins were doing similar things and had repetitive code, such as retrive the worksheet data. Therfore, I refactor both functions, where the validate_team_entry() wont only give a return of a boolean to let the program continue but it will also provide the league of the team to be able to scan it in the get_team_data() function. 
+The ensuing challenge lay in suggesting teams when an exact match eluded user input. Incorporating a team suggestion mechanism within validate_team_entry() was logical, encompassing match assessment, user confirmation, and entry validation.
 
-Finally, the hardest part, provide a team suggestion in case the user does not input an exact match of the team(s) they want to find out the score. This was definelty going to be part of the validate_team_entry() function as it needed to assess if there was a not an match, suggest one, make the user confirm, and then validate the entry. 
+To achieve this, the suggest_team() function was formulated, employing the Levenshtein distance method to gauge string similarity. By comparing user input with league-specific teams, the function determined the best match, presenting it for user confirmation.
 
-I then first define a suggest_team() function that takes the user input and a list with all the teams of the league. Then I used the fuzz method that measures the similarity between two strings by calculating the [Levenshtein distance](#definitions) between two  strings. The function will first scan a list with all the teams, check the similartiy ratio from the user's input, and then it will return the highest ratio and the best match they found int the list. 
+Integration of suggest_team() within validate_team_entry() proved slightly intricate due to technicalities involving the lower() method in the suggest_team() function and the league_teams dictionary in the validate_team_entry() function. To mitigate this, a consolidated list of all teams was generated within validate_team_entry() and fed into suggest_team().
 
-This function was then called in the validate_team_entry(). For this I tried to use the exisiting leage_team dictionary but for a reason, it was throwing an error stating an issue with the lower() methods used in teh suggest_team() function. Threfore, to solve this, I just created a single list with all the teams in the validate_team_entry() function, and use it as an input for the suggest_team() function. 
+This meticulous process significantly enhanced the program's functionality, ranging from exact match validation to team suggestions, and culminated in a more streamlined and efficient codebase.
 
-## Remaining bugs
+## Unfixed bugs
 
-- There is a limitation of requests per minute that this program can assess. Threfore, if the user decides to use the program multiple times, eventually the program will display an error message stating that the program exceeded the limit of API requests. 
+- The program operates within a specific constraint concerning the number of requests it can process per minute. Consequently, should a user opt for multiple program iterations, an error message will eventually be displayed, indicating the program's surpassing of the API request limit.
 
 ## Validator testing
 
