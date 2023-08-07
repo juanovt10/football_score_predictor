@@ -262,7 +262,10 @@ def result_calculator(home_stats, away_stats):
     This function multyply each stat for a factor and then adds them all up to
     provide a match
     """
-    score_factors = [0.5, 0.25, 0.5, 0.75, -0.5, -0.75, -0.5]
+
+    print(home_stats)
+    print(away_stats)
+    score_factors = [0.5, 0.25, 0.5, 0.75, 0.5, 0.75, -0.75]
 
     home_score_factors = [x * y for x, y in zip(home_stats, score_factors)]
     away_score_factors = [x * y for x, y in zip(away_stats, score_factors)]
@@ -273,15 +276,19 @@ def result_calculator(home_stats, away_stats):
     home_defensive_factors = home_score_factors[-3:]
     away_defensive_factors = away_score_factors[-3:]
 
-    home_score = int(sum(home_offensive_factors) + sum(away_defensive_factors))
-    away_score = int(sum(away_offensive_factors) + sum(home_defensive_factors))
+    print(sum(home_offensive_factors))
+    print(sum(away_defensive_factors))
+    print(sum(away_offensive_factors))
+    print(sum(home_defensive_factors))
+
+    home_score = int(sum(home_offensive_factors) - sum(away_defensive_factors))
+    away_score = int(sum(away_offensive_factors) - sum(home_defensive_factors))
 
     home_score = max(0, min(5, home_score))
     away_score = max(0, min(5, away_score))
 
-    home_score += 1
-
     return home_score, away_score
+
 
 def find_mode():
     print("Please enter the teams you want to find out the score")
@@ -312,6 +319,7 @@ def guess_mode():
     guess_feedback = score_comparisson(score_input, result)
 
     print(guess_feedback + " " + f"The result is: {home_team_info[2]} {result[0]} - {result[1]} {away_team_info[2]}")
+
 
 def restart_program():
     while True: 
