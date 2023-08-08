@@ -240,7 +240,8 @@ def get_team_data(team, league_name):
         if team_data[0] == team:
             str_data = team_data[1:]
             break
-
+    
+    
     data = [float(i) for i in str_data]
 
     stat_indexes = [0, 1, 2, 3, 4, 5, 6]
@@ -250,7 +251,7 @@ def get_team_data(team, league_name):
     for index in stat_indexes:
         stat_weighted_average = 0
         for i in range(index, len(data), 7):
-            stat_weighted_average += ((data[i]) * (7-(i/7)))
+            stat_weighted_average += ((data[i]) * (5-(i/7)))
 
         stats_weighted_averages.append(stat_weighted_average / 15)
 
@@ -263,12 +264,13 @@ def result_calculator(home_stats, away_stats):
     provide a match
     """
 
-    print(home_stats)
-    print(away_stats)
     score_factors = [0.5, 0.25, 0.5, 0.75, 0.5, 0.75, -0.75]
 
     home_score_factors = [x * y for x, y in zip(home_stats, score_factors)]
     away_score_factors = [x * y for x, y in zip(away_stats, score_factors)]
+
+    print(home_score_factors)
+    print(away_score_factors)
 
     home_offensive_factors = home_score_factors[:4]
     away_offensive_factors = away_score_factors[:4]
