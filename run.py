@@ -1,5 +1,6 @@
 import gspread
 import random
+import numpy as np
 from google.oauth2.service_account import Credentials
 from fuzzywuzzy import fuzz
 
@@ -244,7 +245,6 @@ def get_team_data(team, league_name):
     
     data = [float(i) for i in str_data]
 
-    print(data)
     stat_indexes = [0, 1, 2, 3, 4, 5, 6]
 
     stats_weighted_averages = []
@@ -270,13 +270,10 @@ def result_calculator(home_stats, away_stats):
     provide a match
     """
 
-    score_factors = [0.75, 0.5, 0.5, 1, 0.5, 0.75, -0.5]
+    score_factors = [0.5, 0.25, 0.5, 0.75, 0.5, 0.75, -0.75]
 
     home_score_factors = [x * y for x, y in zip(home_stats, score_factors)]
     away_score_factors = [x * y for x, y in zip(away_stats, score_factors)]
-
-    print(home_score_factors)
-    print(away_score_factors)
 
     home_offensive_factors = home_score_factors[:4]
     away_offensive_factors = away_score_factors[:4]
@@ -284,14 +281,23 @@ def result_calculator(home_stats, away_stats):
     home_defensive_factors = home_score_factors[-3:]
     away_defensive_factors = away_score_factors[-3:]
 
+    home_ratio = sum(home_offensive_factors) / (1/sum(away_defensive_factors))
+    away_ratio = sum(away_offensive_factors) / (1/sum(home_defensive_factors))
+
+    home_ratio = np.exp(home_ratio) / (np.exp(home_ratio) + np.exp(away_ratio))
+    away_ratio = np.exp(away_ratio) / (np.exp(home_ratio) + np.exp(away_ratio))
+
+    print(home_ratio)
+    print(away_ratio)
+
     print(sum(home_offensive_factors))
-    print(sum(away_defensive_factors))
     print(sum(away_offensive_factors))
-    print(sum(home_defensive_factors))
 
-    home_score = int(sum(home_offensive_factors) - sum(away_defensive_factors))
-    away_score = int(sum(away_offensive_factors) - sum(home_defensive_factors))
+    home_score = int(home_ratio * sum(home_offensive_factors))
+    away_score = int(away_ratio * sum(away_offensive_factors))
 
+    home_score += 1
+    
     home_score = max(0, min(5, home_score))
     away_score = max(0, min(5, away_score))
 
