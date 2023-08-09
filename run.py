@@ -287,17 +287,11 @@ def result_calculator(home_stats, away_stats):
     home_ratio = np.exp(home_ratio) / (np.exp(home_ratio) + np.exp(away_ratio))
     away_ratio = np.exp(away_ratio) / (np.exp(home_ratio) + np.exp(away_ratio))
 
-    print(home_ratio)
-    print(away_ratio)
-
-    print(sum(home_offensive_factors))
-    print(sum(away_offensive_factors))
-
     home_score = int(home_ratio * sum(home_offensive_factors))
     away_score = int(away_ratio * sum(away_offensive_factors))
 
     home_score += 1
-    
+
     home_score = max(0, min(5, home_score))
     away_score = max(0, min(5, away_score))
 
@@ -305,7 +299,7 @@ def result_calculator(home_stats, away_stats):
 
 
 def find_mode():
-    print("Please enter the teams you want to find out the score")
+    print("\nPlease enter the teams you want to find out the score")
     print("Example: Manchester United, Real Madrid, Inter, PSG, Bayern Munich\n")
     home_team_info = input_home_team()
     away_team_info = input_away_team(home_team_info[0])
@@ -358,7 +352,7 @@ def main():
     (GER) and Ligue 1 (FRA)\n""")
     
     while True:
-        print("Enter program mode:")
+        print("Choose program mode")
         user_decision = input("Enter 'find' or 'guess':\n").strip().lower()
         if user_decision == 'find':
             find_mode()
