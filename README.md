@@ -59,26 +59,84 @@ The presented flowchart showcases a notable omission—the inclusion of the head
 # Features
 
 ## Existing features
+- Welcome the user to the program
+    * Clear display of the capacities and limitations of the program
+
+    ![Welcome message](assets/readme_images/welcome_message.png)
+
+- Ability to choose between two program modes
+
+    ![Program modes](assets/readme_images/program_modes.png)
+
+- Find out score
+    * When choosing the find out score, the console asks the user which teams they want to check for the score, with some examples:
+
+    ![Find mode welcome](assets/readme_images/find_mode_intro.png)
+
+    * After the user inputs an accurate team, the program will provide feedback of which team the user selected and the league this team plays. Then it proceeds to ask the user the away team:
+
+    ![Find mode away team](assets/readme_images/find_mode_second_input.png)
+
+    * If the user inputs a valid team, the program will also display the away team and the league where the team plays. Then it will retrieve the data of both teams using the API connection, perform statistical calculations and provide a result: 
+
+    ![Find mode result](assets/readme_images/find_mode_result.png)
+
+- Guess mode
+    * When the guess mode is selected, the program will randomly select two teams from the 5 leagues, and will ask the user to input the score in a specific format:
+
+    ![Guess mode intro](assets/readme_images/guess_mode_intro.png)
+
+    * If the user inputs a score in the correct format, the program will calculate which will be the score of those two teams using the statistical analysis and will then compare it with the user input. If the user is correct, it will display positive feedback and if the user is incorrect, it will display negative feedback:
+
+    ![Guess mode result](assets/readme_images/guess_mode_result.png)
+
+- Restart program
+    * After using the find or guess mode, the program will ask the user if they want to use the project again:
+
+    ![Restart program](assets/readme_images/restart_program.png)
+
+
+
+- Team suggestion
+    * In football, teams can be known by various names, including nicknames, acronyms, or simplified versions of their official names. For instance: 
+        * Machester Untied, Man Untied
+        * Bayern Munchen, Bayern Munich
+        * FC Barcelona, Barcelona, Barca
+    * To address the variation in team names, I utilized the fuzzywuzzy fuzz method. This approach calculates the similarity between two strings, allowing for a more robust and flexible matching process.
+    * By combining the fuzzywuzzy method with data_entry_validation(), the program offers the best matching suggestion for the user's input. It then seeks user confirmation to ensure the intended team is accurately identified and considered for further processing.
+
+    ![Team suggestion](assets/readme_images/team_suggestion.png)
+
+- Input control 
+    * The program asks the user multiple inputs in various formats:
+        * Select program mode
+        * Input teams in find mode
+        * Approve team suggestion
+        * Input teams score
+        * Restart program
+    
+    For the approval of team suggestion, restart program and selecting program mode, the user is asked to enter specific inputs depending on the action the want to take. It can be 'y' or 'n' for yes or no, or 'find' or 'guess' for find or guess modes. If the user enters something different than specified, the program will display and invalid input and ask the user again:
+
+    ![Program mode error](assets/readme_images/program_mode_incorrect_input.png)
+
+    ![Team suggestion error](assets/readme_images/team_suggestion_incorrect_input.png)
+
+    ![Restart program error](assets/readme_images/restart_program_incorrect_input.png)
+
+    When entering the input teams, the program will first try to suggest a team if the user input has a 70% similarity with any of the teams in the database. However, if there is no match, it will provide feedback to the user stating that the team is either not in the leagues that the program uses or to check for typos or alternative names:
+
+    ![Team input error](assets/readme_images/invalid_team_input.png)
+
+    For the guess mode, the program specifies which type of format the score sholuld be enter to run the program. If the user does not comply, it will display an invalid message and ask for the input again:
+
+    ![Score input error](assets/readme_images/invalid_score_input.png)
+
 - Data retrival and processing
     * The program scans all 5 worksheets to identify or suggest a match based on user input
     * The program then uses the matches to retrive the specfiic statistics for the teams
     * It the process this data by calculating a weighted average of each team's statistics, which is then multiplied by a factor to determine the result
     * To account for the home advantage, it adds 1 goal for the home team and subtracts 1 goal from the away team.
-    * To provide a realistic result, the program sets a maximum goal output of 5 goals. 
-
-- Guessing score
-    * The program scans all 5 worksheets and selects two random teams for the user to guess a score between them
-    * The program is designed to access only one format of a match score, this is two integers separated with a hyphen e.g. 2-3, 4-1, 1-0. 
-    * Then the program runs the same calculations and compares the inputted result with the calculated result and provides feedback to their user about their guess
-
-- Team suggestion
-    * In football, teams can be known by various names, including nicknames, acronyms, or simplified versions of their official names. For instance: 
-        * Machester Untied, Man Untied, Man Utd
-        * Paris-Saint-Germain, PSG
-        * Tottenham Hotsput, Spurs, Tottenham
-        * FC Barcelona, Barcelona, Barca
-    * To address the variation in team names, I utilized the fuzzywuzzy fuzz method. This approach calculates the similarity between two strings, allowing for a more robust and flexible matching process.
-    * By combining the fuzzywuzzy method with data_entry_validation, the program offers the best matching suggestion for the user's input. It then seeks user confirmation to ensure the intended team is accurately identified and considered for further processing.
+    * To provide a realistic result, the program sets a maximum goal output of 5 goals.
 
 ## Future features
 
@@ -104,7 +162,7 @@ It is important to note that European football leagues operate on a relegation/p
 
 Due to this system, teams are constantly moving between divisions, resulting in discrepancies in statistics due to the different football level. To address this, the data was amended and corrected accordingly. For teams that played in lower divisions in the past five seasons, offensive statistics (such as xG, possession, shots, and goals) were reduced by 20%, while defensive statistics (like xG against and goals conceded) were increased by 20%. This adjustment ensures a fair comparison between teams playing at different levels of football.
 
-## Data processing*
+## Data processing
 
 The program scans the spreadsheet to retrieve statistics for the user-inputted teams, calculating a weighted average by assigning higher importance to more recent seasons. This approach accounts for the dynamic nature of football teams, which can experience exponential growth or decline based on their performance.
 
@@ -115,16 +173,18 @@ After processing the weighted averages, these are multuply by a factor to provid
 - xG * 0.5 
 - Possession * 0.25
 - Shots/conversion rate * 0.5
-- Goals * 0.5
-- xG against * -0.5 
-- Goals conceded * -0.75
-- Clean sheet percentage * -0.5
+- Goals * 0.75
+- xG against * 0.5 
+- Goals conceded * 0.75
+- Clean sheet percentage * -0.75
+
+After multiplying the weighted averages with the "score" factors, the offensive and defensive values are compared by calculating a ratio between the sum of all offensive factors of the home team and the inverse of the defensive factors the away team and viceversa. The purpose of using the inverse, is that the largerst the sum of the defensive factors the worst they are defensively. After calculating the ratios, I used numpy to apply a softmax-like transformation of this ratios to keep them between 0 and 1, then I just multiply these ratios by the sum offensive values to arrive to a score. 
 
 Additionally, home teams typically enjoy an advantage, benefiting from the majority of supporters and familiar conditions. Consequently, one goal was added to home teams.
 
 To ensure more realistic predictions, a maximum limit of 5 goals was set, preventing results that exceeded this threshold. Similarly, to maintain realism, a minimum limit of 0 goals was applied to teams with extremely negative statistics, preventing them from obtaining negative scores. 
 
-# Testing
+# Testing*
 
 I have tested the project by performing the following tests: 
 
@@ -148,7 +208,9 @@ This meticulous process significantly enhanced the program's functionality, rang
 
 ## Unfixed bugs
 
-- The program operates within a specific constraint concerning the number of requests it can process per minute. Consequently, should a user opt for multiple program iterations, an error message will eventually be displayed, indicating the program's surpassing of the API request limit.
+- The program operates within a specific constraint concerning the number of requests it can process per minute. Consequently, should a user opt for multiple program iterations, an error message will eventually be displayed, indicating the program's surpassing of the API request limit: 
+
+![API request limit](assets/readme_images/API_request_limit.png)
 
 ## Validator testing
 
@@ -168,6 +230,7 @@ This meticulous process significantly enhanced the program's functionality, rang
 - gspread - to have a direct access to google sheets 
 - google-auth - Google authentication credential to access Google APIs
 - fuzzywuzzy - Python library used for string matching and string similarity
+- NumPy - Python library used for scientific computing
 - Am I responsive - to ensure the project looked good across all devices.
 
 # Deployment
@@ -190,6 +253,7 @@ The program was deployed using Code Institue's mock termina for Heroku.
 
 - Love-sandwiches walkthorugh project provided by [Code Institute](https://codeinstitute.net/global/)
 - Fuzzywuzzy library [Offical Python documentation](https://pypi.org/project/fuzzywuzzy/), and [use explanation](https://www.geeksforgeeks.org/fuzzywuzzy-python-library/)
+- NumPy Library [Official NumPy](https://numpy.org/), and [stackoverflow](https://stackoverflow.com/questions/34968722/how-to-implement-the-softmax-function-in-python) to get the explanations of how to use the Softmax-like transformation.
 - The .title() method [explanation](https://www.w3schools.com/python/ref_string_title.asp#:~:text=The%20title()%20method%20returns,be%20converted%20to%20upper%20case.)
 - Function retruning more than 1 value [explanation](https://www.geeksforgeeks.org/g-fact-41-multiple-return-values-in-python/)
 - List() method [explanation](https://www.programiz.com/python-programming/methods/built-in/list)

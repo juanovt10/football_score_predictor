@@ -21,7 +21,7 @@ def input_home_team():
     Requests the home team to retrive the previous season statistics
     """
     while True:
-        home_team = input("Enter home team:\n").title()
+        home_team = input("Enter home team:\n").strip().title()
 
         entry_check = validate_team_entry(home_team, "")
 
@@ -37,7 +37,7 @@ def input_away_team(home_team):
     Requests the away team to retrive the previous season statistics
     """
     while True:
-        away_team = input("Enter away team:\n").title()
+        away_team = input("Enter away team:\n").strip().title()
 
         entry_check = validate_team_entry(away_team, home_team)
 
@@ -201,20 +201,20 @@ def retrive_random_teams():
     random_teams = random.sample(europe_teams_list, 2)
 
     return random_teams
-    
+
 
 def input_match_score():
     while True:
         try:
-            score_input = input("Please enter the score (e.g 2-1, 1-2, 3-0):\n")
+            score_input = input("Please enter the score (e.g 2-1, 1-2, 3-0):\n").strip()
             home_score, away_score = map(int, score_input.split('-'))
 
             if home_score < 0 or away_score < 0: 
-                print("Invalid score. Scores must be positive integers")
+                print("\nInvalid score. Scores must be positive integers")
             else:
                 return home_score, away_score
         except ValueError:
-            print("Invalid input. Please enter the score in the format 'X-Y', where X and Y are positive integers")
+            print("\nInvalid input. Please enter the score in the format 'X-Y', where X and Y are positive integers")
 
 
 def score_comparisson(input_scores, calculated_scores):
@@ -300,7 +300,7 @@ def result_calculator(home_stats, away_stats):
 
 def find_mode():
     print("\nPlease enter the teams you want to find out the score")
-    print("Example: Manchester United, Real Madrid, Inter, PSG, Bayern Munich\n")
+    print("Example: Manchester United, Real Madrid, Juventus, Montpellier, Bayern Munich\n")
     home_team_info = input_home_team()
     away_team_info = input_away_team(home_team_info[0])
     home_team_data = get_team_data(home_team_info[0], home_team_info[1])
@@ -343,16 +343,12 @@ def restart_program():
 
 
 def main():
-    print("""Welcome to the 2023/24 season foorball predictor. This program
-    allows you to choose between find out a score or guessing one from
-    two random teams\n""")
-    print("""Note that this program only assesses Europe's top 5 leagues'
-    teams:""")
-    print("""Premier League (ENG), La Liga (ESP), Serie A (ITA), Bundesliga
-    (GER) and Ligue 1 (FRA)\n""")
+    print("Welcome to the 2023/24 season foorball predictor. This program allows you to choose between find out a score or guessing one from two random teams\n")
+    print("Note that this program only assesses Europe's top 5 leagues' teams:")
+    print("Premier League (ENG), La Liga (ESP), Serie A (ITA), Bundesliga (GER) and Ligue 1 (FRA)")
     
     while True:
-        print("Choose program mode")
+        print("\nChoose program mode")
         user_decision = input("Enter 'find' or 'guess':\n").strip().lower()
         if user_decision == 'find':
             find_mode()
@@ -365,5 +361,6 @@ def main():
             restart_program()
         else:
             print(f"\nInvalid answer: {user_decision}")
+
 
 main()
