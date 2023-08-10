@@ -109,7 +109,7 @@ def validate_team_entry(team_entry, home_team):
 
     league_teams = {}
 
-    # Transpose data, get lists of league teams and fill them as the values of 
+    # Transpose data, get lists of league teams and fill them as the values of
     # the league team dictionary
     for league_name, league_teams_data in europe_leagues_data.items():
         transpose_data = [list(row) for row in zip(*league_teams_data)]
@@ -143,11 +143,11 @@ def validate_team_entry(team_entry, home_team):
             if confirm_input == "y":
                 for league_name, team_list in league_teams.items():
                     if suggested_team_info[0] in team_list and suggested_team_info[0] != home_team:
-                        return True, league_name, suggested_team_info[0] 
+                        return True, league_name, suggested_team_info[0]
                 break
             elif confirm_input == "n":
                 break
-            else: 
+            else:
                 print(f"\nInvalid answer: {confirm_input}")
 
     print(f"""\nSorry but we couldn't find a match for {team_entry}. If you are sure that {team_entry} plays in Europe's top 5 leagues, try to check for typos or an alternative name for the team\n""")
@@ -158,7 +158,7 @@ def retrive_random_teams():
     """
     This function retrives all data of the spreadsheet to create a list with
     all the teams of the 5 leagues. Then, it will randomly select two teams
-    to display the guess mode to the user. 
+    to display the guess mode to the user.
     """
     premier_league_worksheet = SHEET.worksheet("Premier League")
     la_liga_worksheet = SHEET.worksheet("La Liga")
@@ -184,7 +184,7 @@ def retrive_random_teams():
 
     league_teams = {}
 
-    # Transpose data, get lists of league teams and fill them as the values of 
+    # Transpose data, get lists of league teams and fill them as the values of
     # the league team dictionary
     for league_name, league_teams_data in europe_leagues_data.items():
         transpose_data = [list(row) for row in zip(*league_teams_data)]
@@ -195,7 +195,7 @@ def retrive_random_teams():
 
     for value_list in league_teams.values():
         europe_teams_list.extend(value_list)
-    
+
     random_teams = random.sample(europe_teams_list, 2)
 
     return random_teams
@@ -210,7 +210,7 @@ def input_match_score():
             score_input = input("Please enter the score (e.g 2-1, 1-2, 3-0):\n").strip()
             home_score, away_score = map(int, score_input.split('-'))
 
-            if home_score < 0 or away_score < 0: 
+            if home_score < 0 or away_score < 0:
                 print("\nInvalid score. Scores must be positive integers")
             else:
                 return home_score, away_score
@@ -227,7 +227,7 @@ def score_comparisson(input_scores, calculated_scores):
 
     if input_scores == calculated_scores:
         return "\nYou guessed it!"
-    else: 
+    else:
         return "\nSorry wrong answer"
 
 
@@ -245,8 +245,7 @@ def get_team_data(team, league_name):
         if team_data[0] == team:
             str_data = team_data[1:]
             break
-    
-    
+
     data = [float(i) for i in str_data]
 
     stat_indexes = [0, 1, 2, 3, 4, 5, 6]
@@ -260,10 +259,8 @@ def get_team_data(team, league_name):
         for i in range(index, len(data), 7):
             stat_weighted_average += ((data[i]) * (5 - counter))
             counter += 1
-            
 
         stats_weighted_averages.append(stat_weighted_average / 15)
-        
 
     return stats_weighted_averages
 
@@ -346,7 +343,7 @@ def restart_program():
     After the guess or find mode are finished, this function is called to check if
     the user wants to use the program again
     """
-    while True: 
+    while True:
         print("\nDo you want to use the program again?")
         use_again = input("Enter 'Y' for yes or 'N' for no:\n").strip().lower()
         if use_again == 'y':
@@ -362,7 +359,7 @@ def main():
     print("Welcome to the 2023/24 season foorball predictor. This program allows you to choose between find out a score or guessing one from two random teams\n")
     print("Note that this program only assesses Europe's top 5 leagues' teams:")
     print("Premier League (ENG), La Liga (ESP), Serie A (ITA), Bundesliga (GER) and Ligue 1 (FRA)")
-    
+
     while True:
         print("\nChoose program mode")
         user_decision = input("Enter 'find' or 'guess':\n").strip().lower()

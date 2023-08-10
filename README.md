@@ -52,9 +52,9 @@ However, the process was break down into 4 stages:
 1. Begin by integrating data for a single league into the datasheet, ensuring the functionality of the "find out score" mode.
 2. Once the initial mode is verified, extend the implementation to encompass the remaining four European leagues, while maintaining the effectiveness of the "find out score" mode.
 3. Enhance the program by incorporating a team suggestion function, recognizing that football teams often have multiple recognized names.
-4. Elevate the program's capabilities by introducing the "guess score" mode. This mode will present users with two randomly selected teams, prompt for precise user input, and subsequently compare the user's input against the calculated outcome.e 
+4. Elevate the program's capabilities by introducing the "guess score" mode. This mode will present users with two randomly selected teams, prompt for precise user input, and subsequently compare the user's input against the calculated outcome. 
 
-The presented flowchart showcases a notable omission—the inclusion of the head-to-head results for incorporation into the score result calculation. To address this, an API connection is recommended for retrieving this dynamic statistic. This approach is favored due to the substantial volume of data involved. While each team competes in 38 league matches annually, additional engagements like regional and international cups further compound the dataset. Leveraging an API streamlines the retrieval process by accessing specialized databases, expediting requests that would otherwise be time-intensive when dealing with static data.
+The presented flowchart showcases a notable omission, the inclusion of the head-to-head results for incorporation into the score result calculation. To address this, an API connection is recommended for retrieving this dynamic statistic. This approach is favored due to the substantial volume of data involved. While each team competes in 38 league matches annually, additional engagements like regional and international cups further compound the dataset. Leveraging an API streamlines the retrieval process by accessing specialized databases, expediting requests that would otherwise be time-intensive when dealing with static data.
 
 # Features
 
@@ -95,8 +95,6 @@ The presented flowchart showcases a notable omission—the inclusion of the head
 
     ![Restart program](assets/readme_images/restart_program.png)
 
-
-
 - Team suggestion
     * In football, teams can be known by various names, including nicknames, acronyms, or simplified versions of their official names. For instance: 
         * Machester Untied, Man Untied
@@ -115,7 +113,7 @@ The presented flowchart showcases a notable omission—the inclusion of the head
         * Input teams score
         * Restart program
     
-    For the approval of team suggestion, restart program and selecting program mode, the user is asked to enter specific inputs depending on the action the want to take. It can be 'y' or 'n' for yes or no, or 'find' or 'guess' for find or guess modes. If the user enters something different than specified, the program will display and invalid input and ask the user again:
+    For the approval of team suggestion, restart program and selecting program mode, the user is prompted to enter specific inputs based on the desired action. The options include 'y' or 'n' for yes or no, and 'find' or 'guess' for the respective modes. If the user inputs something other than the specified options, the program will show an invalid input message and prompt the user again:
 
     ![Program mode error](assets/readme_images/program_mode_incorrect_input.png)
 
@@ -123,13 +121,18 @@ The presented flowchart showcases a notable omission—the inclusion of the head
 
     ![Restart program error](assets/readme_images/restart_program_incorrect_input.png)
 
-    When entering the input teams, the program will first try to suggest a team if the user input has a 70% similarity with any of the teams in the database. However, if there is no match, it will provide feedback to the user stating that the team is either not in the leagues that the program uses or to check for typos or alternative names:
+    Upon entering the input teams, the program will initially attempt to propose a team if the user's input bears a 70% similarity to any team within the database. In the event of no matches, the program will offer feedback to the user, indicating that the team either does not belong to the utilized leagues or advising them to review for potential typos or alternate names:
 
     ![Team input error](assets/readme_images/invalid_team_input.png)
 
     For the guess mode, the program specifies which type of format the score sholuld be enter to run the program. If the user does not comply, it will display an invalid message and ask for the input again:
 
     ![Score input error](assets/readme_images/invalid_score_input.png)
+
+- Closed program feeback. 
+    * Once the program executes the chosen mode, whether it's 'find' or 'guess', it will immediately present a query to the user regarding their intention to reuse the program. If the user opts for 'no', the program will express gratitude and distinctly convey that no further operations will proceed.
+
+     ![End of program](assets/readme_images/close_program.png)
 
 - Data retrival and processing
     * The program scans all 5 worksheets to identify or suggest a match based on user input
@@ -178,13 +181,15 @@ After processing the weighted averages, these are multuply by a factor to provid
 - Goals conceded * 0.75
 - Clean sheet percentage * -0.75
 
-After multiplying the weighted averages with the "score" factors, the offensive and defensive values are compared by calculating a ratio between the sum of all offensive factors of the home team and the inverse of the defensive factors the away team and viceversa. The purpose of using the inverse, is that the largerst the sum of the defensive factors the worst they are defensively. After calculating the ratios, I used numpy to apply a softmax-like transformation of this ratios to keep them between 0 and 1, then I just multiply these ratios by the sum offensive values to arrive to a score. 
+Following the multiplication of weighted averages with the "score" factors, a comparison between offensive and defensive values occurs. This involves calculating a ratio, where the sum of all offensive factors for the home team are divided by the inverse of the defensive factors for the away team, and vice versa. The rationale behind using the inverse is that a higher sum of defensive factors implies poorer defensive performance.
+
+Subsequent to ratio calculation, I employed numpy to implement a transformation akin to softmax, ensuring that these ratios remain within the range of 0 to 1. The final step involves multiplying these transformed ratios by the sum of offensive values, resulting in the derivation of a score.
 
 Additionally, home teams typically enjoy an advantage, benefiting from the majority of supporters and familiar conditions. Consequently, one goal was added to home teams.
 
 To ensure more realistic predictions, a maximum limit of 5 goals was set, preventing results that exceeded this threshold. Similarly, to maintain realism, a minimum limit of 0 goals was applied to teams with extremely negative statistics, preventing them from obtaining negative scores. 
 
-# Testing*
+# Testing
 
 I have tested the project by performing the following tests: 
 
@@ -192,19 +197,97 @@ I have tested the project by performing the following tests:
 - Provide invalid inputs, such as numbers or strings that do not match or provide a realistic match for the teams in these leagues
 - Tested in my local terminal and the Code Institute Heroku terminal
 
-Most of the coding challenges centered around refining the validate_team_entry() function. At the project's outset, the focus was on ensuring exact matches, data retrieval, and precise result provision. To accomplish this, a single worksheet was scanned, data transposed, and exact matches retrieved for processing.
+## Fixed bugs 
 
-Once the core functionality was robust, expansion to cover the other four leagues was necessary. This entailed not only checking team presence but also determining the league for scanning in the get_team_data() function. A get_team_league() function was introduced, utilizing a dictionary structure to categorize teams by league. This enabled accurate league detection for proper spreadsheet access in get_team_data().
+- Regarding the inputs, before incorporating the suggestion feature, I encountered a situation where matches weren't occurring even with accurate input. The problem originated from the requirement that users input the team name precisely as it appeared in the spreadsheet, including capitalization and specific spaces. To address this, I incorporated the title() method to capitalize each word in the user input and the strip() method to eliminate trailing whitespace. Furthermore, for simpler inputs, I applied the lower() method to enhance the user experience in cases where the correct input was provided but not in the correct format.
 
-Recognizing similarities between get_team_data() and validate_team_entry(), a refactoring effort emerged. The latter function, apart from allowing program continuation via boolean return, now also supplied the team's league for get_team_data() reference.
+```
+home_team = input("Enter home team:\n").strip().title()
 
-The ensuing challenge lay in suggesting teams when an exact match eluded user input. Incorporating a team suggestion mechanism within validate_team_entry() was logical, encompassing match assessment, user confirmation, and entry validation.
+confirm_input = input("Enter 'Y' for Yes or 'N' for No:\n").strip().lower()
 
-To achieve this, the suggest_team() function was formulated, employing the Levenshtein distance method to gauge string similarity. By comparing user input with league-specific teams, the function determined the best match, presenting it for user confirmation.
+score_input = input("Please enter the score (e.g 2-1, 1-2, 3-0):\n").strip()
+```
 
-Integration of suggest_team() within validate_team_entry() proved slightly intricate due to technicalities involving the lower() method in the suggest_team() function and the league_teams dictionary in the validate_team_entry() function. To mitigate this, a consolidated list of all teams was generated within validate_team_entry() and fed into suggest_team().
+- In the validate_team_data() function, during the initial phases of the project, it was simpler to retrieve a single list containing all the teams, considering only one league (and worksheet). Yet, upon integrating the other 4 leagues, a challenge emerged: the need to scan multiple worksheets while also retrieving the league name for subsequent use in the get_team_data() function. To address this, I shifted the approach from using lists to employing dictionaries. This allowed me to maintain all teams within lists as values, utilizing the league names as keys.
 
-This meticulous process significantly enhanced the program's functionality, ranging from exact match validation to team suggestions, and culminated in a more streamlined and efficient codebase.
+```
+    europe_leagues_data = {
+        "Premier League": premier_league_data,
+        "La Liga": la_liga_data,
+        "Serie A": serie_a_data,
+        "Bundesliga": bundesliga_data,
+        "Ligue 1": ligue_1_data
+    }
+
+    league_teams = {}
+
+    for league_name, league_teams_data in europe_leagues_data.items():
+        transpose_data = [list(row) for row in zip(*league_teams_data)]
+        teams = (transpose_data[0])[1:]
+        league_teams[league_name] = teams
+
+
+    for league_name, team_list in league_teams.items():
+        if team_entry in team_list and team_entry != home_team:
+            return True, league_name, team_entry
+```
+
+- The team suggestion feature was not initially planned but became imperative as the project progressed, owing to the inherent variability in football team names. In this context, I integrated the fuzz method to leverage string similarity. However, upon invoking the suggested_team() function within the validate_team_entry() function, I noticed that the program was only scanning the final value (list) within the all-teams dictionary, neglecting the others. As a remedy, I formulated a consolidated list encompassing all teams, enabling a precise suggestion encompassing all 5 leagues.
+
+```
+    europe_teams_list = []
+
+    for value_list in league_teams.values():
+        europe_teams_list.extend(value_list)
+
+    suggested_team_info = suggest_team(team_entry, europe_teams_list)
+
+    if suggested_team_info[1] > 70:
+        while True:
+            print(f"\nDid you mean '{suggested_team_info[0]}'?")
+            confirm_input = input("Enter 'Y' for Yes or 'N' for No:\n").strip().lower()
+            if confirm_input == "y":
+                for league_name, team_list in league_teams.items():
+                    if suggested_team_info[0] in team_list and suggested_team_info[0] != home_team:
+                        return True, league_name, suggested_team_info[0]
+                break
+            elif confirm_input == "n":
+                break
+            else:
+                print(f"\nInvalid answer: {confirm_input}")
+```
+
+- In the project's initial phases, I collected only five statistics across five seasons. Consequently, the for loop used for computing weighted averages was straightforward, as the 'i' value effectively traversed the five seasons while retrieving the corresponding five statistics. However, to enhance the depth of analysis, I introduced two additional statistics. This introduced an issue wherein the calculations for weighted averages became inaccurate. After thoroughly reviewing the code and debugging, I recognized the necessity for a new variable within the loop to accurately compute the weighted average.
+
+```
+for index in stat_indexes:
+        stat_weighted_average = 0
+        counter = 0
+
+        for i in range(index, len(data), 7):
+            stat_weighted_average += ((data[i]) * (5 - counter))
+            counter += 1
+
+        stats_weighted_averages.append(stat_weighted_average / 15)
+
+    return stats_weighted_averages
+```
+
+- In the early stages, the result_calculator() function exhibited a static nature, producing identical scores for each team regardless of the opponent. To address this limitation, I introduced defensive statistics as a counterbalance to offensive ones. This adjustment enabled distinct scores for a single team based on their opposing team. However, an issue arose due to the range of retrieved statistics and their associated weights, which spanned from 0 to 6. Consequently, the combined computation never yielded a realistic score.
+
+    To resolve this challenge, I implemented the softmax-like transformation. By employing this transformation, I established ratios confined within the range of 0 to 1. As a result, all the statistics were standardized to a similar format during computation.
+
+```
+    home_ratio = sum(home_offensive_factors) / (1/sum(away_defensive_factors))
+    away_ratio = sum(away_offensive_factors) / (1/sum(home_defensive_factors))
+
+    home_ratio = np.exp(home_ratio) / (np.exp(home_ratio) + np.exp(away_ratio))
+    away_ratio = np.exp(away_ratio) / (np.exp(home_ratio) + np.exp(away_ratio))
+
+    home_score = int(home_ratio * sum(home_offensive_factors))
+    away_score = int(away_ratio * sum(away_offensive_factors))
+```
 
 ## Unfixed bugs
 
@@ -214,7 +297,7 @@ This meticulous process significantly enhanced the program's functionality, rang
 
 ## Validator testing
 
-- The python file passes through the [PP8 validator](link) with no issues
+- The python file passes through the [PP8 validator](link) with no issues except by the more than 79 characters per line recomended by PEP 8. 
 
 # Technologies used
 
