@@ -50,11 +50,10 @@ def input_away_team(home_team):
 
 def suggest_team(input_team, teams_list):
     """
-    In case the user's input is not a direct match with the strings from the
-    spreadsheet. This function, scans the list of teams and use the fuzz method
-    to check the similarity ratio, then the functions returns the best match
-    from the scan, and the ratio so it can be checked in the
-    validate_team_entry() function
+    If the user's input is not a direct match with the strings from the spreadsheet,
+    this function scans the list of teams and uses the fuzz method to check the
+    similarity ratio. Then, the function returns the best match from the scan,
+    along with the ratio, so it can be checked in the validate_team_entry() function.
     """
     best_match = None
     highest_ratio = 0
@@ -70,27 +69,21 @@ def suggest_team(input_team, teams_list):
 
 def validate_team_entry(team_entry, home_team):
     """
-    It retrives the data from all 5 worksheets.
+    It retrieves data from all 5 worksheets and places the data in a
+    dictionary, with league names as keys and corresponding worksheet
+    data as values. It extracts the list of teams and adds them to a
+    new dictionary, where league names are keys and lists of teams are values.
 
-    It then places the data in a dictionary where the keys are the league names
-    and the values are the data from each worksheet.
+    Afterwards, it scans the dictionaries' lists to find a match. If a match is found,
+    the function returns a boolean along with the league and team entry.
+    In cases where no match is found, it calls the suggest_team() function.
+    This function takes the user's team entry and the list of all teams from the 5 leagues,
+    and then returns the best match along with the matching ratio.
 
-    Then it extracts the list of teams, and added to a new dictionary where
-    the keys are the league names and the values are a list of teams of each
-    league.
-
-    It then scans the lists of the dictionary to find a match, if it finds it,
-    it returns a boolean, the league and the team entry.
-
-    In the case that it doesn't find a match it calls the suggest_team()
-    function. This function recives the user team entry and the list of all
-    the teams of the 5 leagues, it then returns the best match and the match
-    ratio.
-
-    Then the function just assess if the ratio is high enough, provides a
-    suggestion to the user, and then the user needs to confirm. If it does,
-    then the function will return the league, team_suggestion and the boolean.
-    If the user does not confirm, it returns the same but with a False boolean.
+    Following this, the function assesses if the ratio is sufficiently high and offers a
+    suggestion to the user. The user must confirm, and if they do, the function returns the league,
+    team suggestion, and a boolean. If the user declines, the function returns the same,
+    but with a False boolean.
     """
     premier_league_worksheet = SHEET.worksheet("Premier League")
     la_liga_worksheet = SHEET.worksheet("La Liga")
@@ -162,6 +155,11 @@ def validate_team_entry(team_entry, home_team):
 
 
 def retrive_random_teams():
+    """
+    This function retrives all data of the spreadsheet to create a list with
+    all the teams of the 5 leagues. Then, it will randomly select two teams
+    to display the guess mode to the user. 
+    """
     premier_league_worksheet = SHEET.worksheet("Premier League")
     la_liga_worksheet = SHEET.worksheet("La Liga")
     serie_a_worksheet = SHEET.worksheet("Serie A")
@@ -204,6 +202,9 @@ def retrive_random_teams():
 
 
 def input_match_score():
+    """
+    Requests the user to input the score of the displayed teams in a specific format
+    """
     while True:
         try:
             score_input = input("Please enter the score (e.g 2-1, 1-2, 3-0):\n").strip()
@@ -218,6 +219,9 @@ def input_match_score():
 
 
 def score_comparisson(input_scores, calculated_scores):
+    """
+    Compares the user's input with the calculated scores from the result_calculation function
+    """
     input_home, input_away = input_scores
     calc_home, calc_away = calculated_scores
 
@@ -299,6 +303,10 @@ def result_calculator(home_stats, away_stats):
 
 
 def find_mode():
+    """
+    Triggers the find mode, it requests the home and away teams from the user,
+    calculates the score based on the data and displays the score.
+    """
     print("\nPlease enter the teams you want to find out the score")
     print("Example: Manchester United, Real Madrid, Juventus, Montpellier, Bayern Munich\n")
     home_team_info = input_home_team()
@@ -311,6 +319,10 @@ def find_mode():
 
 
 def guess_mode():
+    """
+    Triggers the guess mode. Displays two random teams from the 5 leagues, requests
+    the user to guess a score and provides feedback based on the users input
+    """
     random_teams = retrive_random_teams()
     print("\nWhat do you think will be the score between these two teams?")
     print(f"Home team: {random_teams[0]}")
@@ -330,6 +342,10 @@ def guess_mode():
 
 
 def restart_program():
+    """
+    After the guess or find mode are finished, this function is called to check if
+    the user wants to use the program again
+    """
     while True: 
         print("\nDo you want to use the program again?")
         use_again = input("Enter 'Y' for yes or 'N' for no:\n").strip().lower()
